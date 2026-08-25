@@ -1,0 +1,121 @@
+/* ============================================================================
+   Wellness Tools — shared design tokens
+   Adopted from the Design redesign (Newsreader/Instrument Sans, paper palette,
+   card + button system). Defaults are Concentra's real brand colors; pages
+   override --brand-* at runtime from hub/config, so this stays white-label.
+
+   Load order on each page:
+     1. <link> Google Fonts (Newsreader + Instrument Sans)
+     2. <link> this file
+     3. page applies hub/config -> sets --brand-blue/navy/orange/spruce inline
+   ============================================================================ */
+
+:root {
+  /* ---- Brand accent (OVERRIDDEN per-tenant from hub/config at runtime) ----
+     Defaults = Concentra. The gold family from the Design prototype maps to
+     the tenant's brand accent; for Concentra that accent is orange. */
+  --brand-blue:   #236192;   /* primary brand / chart line 1 / panel fills   */
+  --brand-navy:   #002855;   /* darkest brand / nav rail / inverted panels    */
+  --brand-orange: #ED8B00;   /* ACCENT (was Design gold) — rules, chart line 2 */
+  --brand-spruce: #126e46;   /* library actions / positive accents            */
+
+  /* Accent tints derived from the brand accent, for hover/fill states.
+     (Static here; if a tenant's accent shifts far from orange these can be
+     regenerated, but they read fine across the warm-accent range.) */
+  --accent:        var(--brand-orange);
+  --accent-text:   #B5811F;  /* accent text on light (eyebrows, small labels) */
+  --accent-light:  #E9C77E;  /* accent on dark surfaces / dark-panel CTA       */
+  --accent-fill:   #FBF4E6;  /* selected-card tint                             */
+
+  /* ---- Functional / data colors (NOT tenant-brand; carry meaning) ----
+     Charts need two distinguishable lines; library actions read as "go".
+     Kept as a stable functional palette regardless of tenant accent. */
+  --data-1:        var(--brand-blue);    /* chart series 1 (downloads)         */
+  --data-2:        var(--brand-orange);  /* chart series 2 (QR scans)          */
+  --library:       var(--brand-spruce);  /* library download buttons           */
+  --library-hover: #1F5B41;
+  --positive:      #2C6E4E;              /* ▲ trend deltas                     */
+
+  /* ---- Neutrals (paper system, from Design) ---- */
+  --ink:        #0E2A44;   /* primary text / headings                */
+  --ink-deep:   #0C2135;   /* nav rail bg                            */
+  --paper:      #EFEBE2;   /* app background                         */
+  --paper-lt:   #F6F3ED;   /* section bg / table header rows         */
+  --panel:      #FFFDF9;   /* cards, panels, inputs                  */
+  --border:     #E0D9CB;   /* standard card/panel borders            */
+  --border-lt:  #EFE9DE;   /* interior row dividers                  */
+  --border-st:  #C9C2B3;   /* secondary btn borders / dashed zones   */
+  --muted:      #5F6B77;   /* body copy                              */
+  --muted-2:    #6B7885;   /* secondary copy, chips                  */
+  --subtle:     #8A9199;   /* labels, captions                       */
+  --faint:      #A9A192;   /* timestamps, axis labels                */
+  --cream:      #F1EADC;   /* text on navy surfaces                  */
+
+  /* notice / sample-data banner */
+  --notice-bg:  #FBF4E6;
+  --notice-bd:  #EBD9AF;
+  --notice-tx:  #7A5A18;
+
+  /* chips */
+  --chip-bg:      #F1ECE1;                /* neutral metadata chip            */
+  --chip-lib-bg:  #E7EFEA;               /* active library filter chip        */
+  --chip-lang-bg: #E7EDF3;               /* language badge                    */
+
+  /* ---- Type ---- */
+  --font-display: "Newsreader", Georgia, serif;   /* headings + big numerals  */
+  --font-ui:      "Instrument Sans", system-ui, -apple-system, sans-serif;
+
+  /* ---- Shape / shadow ---- */
+  --r-input: 5px;
+  --r-card:  8px;
+  --r-badge: 3px;
+  --r-pill:  20px;
+  --shadow-card:  0 14px 34px -22px rgba(14,42,68,0.4);
+  --shadow-asset: 0 18px 40px -26px rgba(14,42,68,0.5);
+}
+
+/* ---- Base ---- */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--ink); text-decoration: none; }
+a:hover { color: var(--accent-text); }
+
+/* ---- Reusable primitives (opt-in classes) ---- */
+.dt-eyebrow {
+  font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--accent-text); font-weight: 600;
+}
+.dt-h1 {
+  font-family: var(--font-display); font-weight: 300; letter-spacing: -0.015em;
+  line-height: 1.03; color: var(--ink);
+}
+.dt-h1 em { font-style: italic; color: #1D5B7E; }
+.dt-panel {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--r-card);
+}
+.dt-btn {
+  font-family: var(--font-ui); font-size: 12.5px; border-radius: var(--r-input);
+  padding: 9px 14px; cursor: pointer; border: 1px solid var(--border-st);
+  background: var(--panel); color: var(--ink);
+}
+.dt-btn:hover { border-color: var(--ink); background: var(--paper-lt); }
+.dt-btn--primary { background: var(--brand-blue); border: none; color: var(--cream); font-weight: 600; }
+.dt-btn--primary:hover { background: #17497A; }
+.dt-btn--library { background: var(--library); border: none; color: var(--cream); font-weight: 600; }
+.dt-btn--library:hover { background: var(--library-hover); }
+.dt-chip {
+  font-size: 10.5px; padding: 3px 8px; border-radius: var(--r-pill);
+  background: var(--chip-bg); color: var(--muted-2);
+}
+.dt-notice {
+  background: var(--notice-bg); border: 1px solid var(--notice-bd);
+  color: var(--notice-tx); font-size: 12.5px; border-radius: var(--r-input);
+  padding: 9px 14px;
+}
