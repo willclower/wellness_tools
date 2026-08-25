@@ -45,27 +45,16 @@
   .cta.soon{color:var(--subtle);border-bottom-color:var(--border)}
 
   .lower{padding:44px 34px 0;max-width:1240px;margin:0 auto}
-  .lower-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
   .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);padding:24px 26px}
   .card h3{font-family:var(--font-display);font-weight:400;font-size:20px;margin:0}
   .cap{margin:0 0 18px;font-size:12.5px;color:var(--subtle)}
   .act{display:grid;grid-template-columns:22px 1fr auto;gap:14px;align-items:center;padding:13px 0;border-top:1px solid var(--border-lt)}
   .act .p{font-size:13.5px}.act .s{font-size:11.5px;color:var(--subtle)}.act .t{font-size:11.5px;color:var(--faint)}
-  .starthere{background:var(--brand-blue);border-radius:var(--r-card);padding:26px;color:var(--cream);display:flex;flex-direction:column}
-  .starthere .e{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-light);margin-bottom:14px}
-  .starthere h3{font-family:var(--font-display);font-weight:300;font-size:27px;line-height:1.18;margin:0 0 12px;color:var(--cream)}
-  .starthere p{margin:0 0 20px;font-size:13px;line-height:1.6;color:rgba(241,234,220,.72)}
-  .step{display:flex;gap:12px;align-items:center;font-size:13px;margin-bottom:10px}
-  .step .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px}
-  .step .done{background:var(--accent-light);color:var(--brand-blue)}
-  .step .todo{border:1px solid rgba(241,234,220,.4);font-size:10px}
-  .step.pending{color:rgba(241,234,220,.75)}
-  .setup{margin-top:auto;text-align:center;background:var(--accent-light);color:var(--brand-blue);font-size:13px;font-weight:600;padding:11px 16px;border-radius:5px}
 
   .demo-note{max-width:1240px;margin:22px auto 0;padding:0 34px}
   .demo-note .dt-notice{display:inline-block}
 
-  @media(max-width:1040px){.hero-in{grid-template-columns:1fr;gap:32px}.tools-grid{grid-template-columns:1fr}.lower-grid{grid-template-columns:1fr}h1{font-size:44px}}
+  @media(max-width:1040px){.hero-in{grid-template-columns:1fr;gap:32px}.tools-grid{grid-template-columns:1fr}h1{font-size:44px}}
 </style>
 </head>
 <body>
@@ -99,27 +88,15 @@
   </div>
 
   <div class="lower">
-    <div class="lower-grid">
-      <div class="card">
-        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px">
-          <h3>Recent activity</h3><a href="reports.html" style="font-size:12px;color:var(--muted-2)">View all &rarr;</a>
-        </div>
-        <p class="cap">Across your sites</p>
-        <div class="act"><span style="color:var(--library)">&#9638;</span><div><div class="p">&ldquo;Thirsty is already too late.&rdquo; downloaded</div><div class="s">Screen &middot; 16:9</div></div><span class="t">14 min ago</span></div>
-        <div class="act"><span style="color:var(--brand-blue)">&#8646;</span><div><div class="p">August newsletter translated to Vietnamese</div><div class="s">Reused from library &mdash; 0 new spend</div></div><span class="t">1 hr ago</span></div>
-        <div class="act"><span style="color:var(--accent-text)">&#9684;</span><div><div class="p">Q3 usage report exported</div><div class="s">All sites &middot; CSV</div></div><span class="t">Yesterday</span></div>
-        <div class="act"><span style="color:var(--library)">&#9638;</span><div><div class="p">Screening one-pager added to playlist</div><div class="s">Prevention &middot; office</div></div><span class="t">2 days ago</span></div>
+    <div class="card">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px">
+        <h3>Recent activity</h3><a href="reports.html" style="font-size:12px;color:var(--muted-2)">View all &rarr;</a>
       </div>
-      <div class="starthere">
-        <div class="e">Start here</div>
-        <h3>Build next month&rsquo;s screen playlist in four steps.</h3>
-        <p>Most sites finish in under ten minutes.</p>
-        <div class="step"><span class="n done">&#10003;</span>Pick a subject mix</div>
-        <div class="step"><span class="n done">&#10003;</span>Preview on a test screen</div>
-        <div class="step pending"><span class="n todo">3</span>Translate for your Spanish shift</div>
-        <div class="step pending"><span class="n todo">4</span>Publish to all sites</div>
-        <a class="setup" href="#" id="setup-link">Continue setup</a>
-      </div>
+      <p class="cap">Across your sites</p>
+      <div class="act"><span style="color:var(--library)">&#9638;</span><div><div class="p">&ldquo;Thirsty is already too late.&rdquo; downloaded</div><div class="s">Screen &middot; 16:9</div></div><span class="t">14 min ago</span></div>
+      <div class="act"><span style="color:var(--brand-blue)">&#8646;</span><div><div class="p">August newsletter translated to Vietnamese</div><div class="s">Reused from library &mdash; 0 new spend</div></div><span class="t">1 hr ago</span></div>
+      <div class="act"><span style="color:var(--accent-text)">&#9684;</span><div><div class="p">Q3 usage report exported</div><div class="s">All sites &middot; CSV</div></div><span class="t">Yesterday</span></div>
+      <div class="act"><span style="color:var(--library)">&#9638;</span><div><div class="p">Screening one-pager added to playlist</div><div class="s">Prevention &middot; office</div></div><span class="t">2 days ago</span></div>
     </div>
   </div>
 
@@ -136,34 +113,19 @@ const CARD = {
     title: "Document Translation", idx: "01",
     desc: "Upload a Word file, pick a language and tone. Layout, tables, and formatting come back intact \u2014 and reused instantly if it's been done before.",
     chips: ["18 languages",".docx","Reuse library"], cta: "Open translation \u2192",
-    art: `<div style="position:absolute;inset:0;background:var(--brand-blue);display:flex;align-items:center;gap:10px;padding:0 22px">
-      <div style="flex:1;height:74px;background:rgba(255,253,249,0.13);border-radius:3px;padding:10px">
-        <div style="height:5px;width:70%;background:rgba(255,253,249,.45);margin-bottom:6px"></div>
-        <div style="height:5px;width:90%;background:rgba(255,253,249,.25);margin-bottom:6px"></div>
-        <div style="height:5px;width:55%;background:rgba(255,253,249,.25)"></div></div>
-      <div style="color:var(--accent-light);font-size:17px">\u21c4</div>
-      <div style="flex:1;height:74px;background:rgba(233,199,126,0.16);border:1px solid rgba(233,199,126,.4);border-radius:3px;padding:10px">
-        <div style="height:5px;width:60%;background:rgba(233,199,126,.8);margin-bottom:6px"></div>
-        <div style="height:5px;width:85%;background:rgba(233,199,126,.5);margin-bottom:6px"></div>
-        <div style="height:5px;width:72%;background:rgba(233,199,126,.5)"></div></div></div>`
+    art: `<img src="assets/card-translation.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
   },
   vwl: {
     title: "Visual Wellness Library", idx: "02",
     desc: "Workplace screens, one-pager posters, and the monthly newsletter \u2014 filtered by subject, previewed full-screen, downloaded white-label ready.",
     chips: ["Screens + print","16:9","New each month"], cta: "Open library \u2192",
-    art: `<div style="position:absolute;inset:0;background:var(--library);display:flex;align-items:center;justify-content:center;gap:12px">
-      <div style="width:88px;height:52px;border-radius:3px;background:rgba(255,253,249,.14);transform:rotate(-4deg)"></div>
-      <div style="width:104px;height:62px;border-radius:3px;background:rgba(233,199,126,.22);border:1px solid rgba(233,199,126,.45)"></div>
-      <div style="width:88px;height:52px;border-radius:3px;background:rgba(255,253,249,.14);transform:rotate(4deg)"></div></div>`
+    art: `<img src="assets/card-library.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
   },
   reports: {
     title: "Reports", idx: "03",
     desc: "What's landing and where. Downloads, QR scans, translations, and per-site trends \u2014 exportable for your quarterly review.",
     chips: ["Per-site","12 months","CSV export"], cta: "Open reports \u2192",
-    art: `<div style="position:absolute;inset:0;background:#7A4E12">
-      <svg viewBox="0 0 320 128" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%">
-        <path d="M0 104 L40 96 L80 78 L120 84 L160 58 L200 64 L240 40 L280 30 L320 22 L320 128 L0 128 Z" fill="rgba(233,199,126,0.22)"></path>
-        <path d="M0 104 L40 96 L80 78 L120 84 L160 58 L200 64 L240 40 L280 30 L320 22" fill="none" stroke="#E9C77E" stroke-width="2.5"></path></svg></div>`
+    art: `<img src="assets/card-reports.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
   }
 };
 
@@ -215,9 +177,6 @@ async function boot(){
   const wrap = document.getElementById('tools'); wrap.innerHTML='';
   ['translation','vwl'].forEach((k)=>{ const c=toolCard(k, urls[k]); if(c) wrap.appendChild(c); });
   wrap.appendChild(toolCard('reports','internal'));
-  const setup=document.getElementById('setup-link');
-  setup.href = !isPlaceholder(urls.vwl) ? urls.vwl : 'reports.html';
-  if(!isPlaceholder(urls.vwl)){ setup.target='_blank'; setup.rel='noopener'; }
 }
 boot();
 </script>
