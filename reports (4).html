@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports — Wellness Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="wellness-tools-tokens.css">
+<style>
+  @keyframes drawLine { from { stroke-dashoffset: 1200; } to { stroke-dashoffset: 0; } }
+
+  .topbar{display:flex;align-items:center;gap:12px;padding:16px 34px;background:#fbfaf7;border-bottom:1px solid var(--border)}
+  .topbar img{height:26px;display:none}
+  .topbar .brand{font-weight:600;color:var(--brand-blue);font-size:15px}
+  .topbar .back{margin-left:auto;font-size:12.5px;color:var(--muted)}
+  .topbar .back:hover{color:var(--accent-text)}
+
+  main{max-width:1300px;margin:0 auto;padding:34px 34px 70px}
+
+  /* header */
+  .head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-text);margin-bottom:12px}
+  .eyebrow span{width:22px;height:1px;background:var(--accent)}
+  h1{font-family:var(--font-display);font-weight:300;font-size:44px;line-height:1.04;margin:0 0 8px;letter-spacing:-.015em}
+  h1 em{font-style:italic;color:#1D5B7E}
+  .lede{margin:0;font-size:13.5px;color:var(--muted)}
+  .head-ctl{display:flex;gap:8px}
+  .seg{display:flex;background:var(--panel);border:1px solid var(--border);border-radius:var(--r-input);overflow:hidden;font-size:12.5px}
+  .seg button{border:0;background:transparent;padding:8px 13px;font:inherit;font-size:12.5px;color:var(--muted);cursor:pointer}
+  .seg button.on{background:var(--ink);color:var(--cream);font-weight:600}
+
+  .notice{margin:22px 0 24px;padding:11px 16px;background:var(--notice-bg);border:1px solid var(--notice-bd);border-radius:var(--r-input);font-size:12.5px;color:var(--notice-tx)}
+
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);padding:24px 26px}
+  .panel h3{font-family:var(--font-display);font-weight:400;font-size:20px;margin:0 0 2px}
+  .panel .cap{margin:0 0 18px;font-size:12px;color:var(--subtle)}
+
+  /* KPI row */
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);padding:20px 20px 12px}
+  .kpi .l{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin-bottom:10px}
+  .kpi .top{display:flex;align-items:flex-end;gap:10px}
+  .kpi .v{font-family:var(--font-display);font-size:36px;line-height:1}
+  .kpi .d{font-size:11.5px;color:var(--positive);padding-bottom:4px}
+  .kpi svg{width:100%;height:40px;margin-top:12px}
+  .kpi.inv{background:var(--ink);color:var(--cream)}
+  .kpi.inv .l{color:var(--accent-light)}
+  .kpi.inv .d{color:rgba(241,234,220,.65)}
+  .kpi.inv .bar{height:5px;border-radius:4px;background:rgba(241,234,220,.2);margin-top:16px;overflow:hidden}
+  .kpi.inv .bar>div{height:100%;background:var(--accent-light);border-radius:4px}
+  .kpi.inv .note{font-size:11.5px;color:rgba(241,234,220,.7);margin-top:9px}
+
+  /* chart row */
+  .row-chart{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;margin-top:16px}
+  .chart-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px}
+  .legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted-2)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:9px;height:9px;border-radius:2px}
+  .row-chart svg{display:block;width:100%;height:auto}
+
+  /* topic heat */
+  .heat{display:grid;grid-template-columns:96px repeat(6,1fr);gap:5px;align-items:center}
+  .heat .mh{font-size:10.5px;color:var(--faint);text-align:center}
+  .heat .rl{font-size:11.5px;color:var(--muted)}
+  .heat .cell{height:26px;border-radius:3px}
+  .heat-legend{display:flex;align-items:center;gap:8px;margin-top:18px;font-size:10.5px;color:var(--faint)}
+  .heat-legend .grad{flex:1;height:6px;border-radius:4px;background:linear-gradient(90deg,rgba(18,57,91,.12),rgba(18,57,91,.95))}
+
+  /* bar panels */
+  .row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+  .bars{display:flex;flex-direction:column;gap:13px}
+  .bar .brow{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
+  .bar .bnum{font-family:var(--font-display);font-size:15px}
+  .track{height:6px;background:var(--chip-bg);border-radius:4px}
+  .fill{height:100%;border-radius:4px;background:var(--data-1)}
+  .fill.o{background:var(--data-2)}
+
+  /* per-site table */
+  .sitecard{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);margin-top:16px;overflow:hidden}
+  .sitecard .sh{padding:22px 26px 16px}
+  .sitecard .sh h3{font-family:var(--font-display);font-weight:400;font-size:20px;margin:0 0 2px}
+  .sitecard .sh p{margin:0;font-size:12px;color:var(--subtle)}
+  .site-grid{display:grid;grid-template-columns:140px minmax(120px,1fr) 84px 84px 92px;gap:18px;align-items:center}
+  .site-hd{padding:11px 26px;background:var(--paper-lt);border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+  .site-hd .r{text-align:right}
+  .site-hd .nw{white-space:nowrap}
+  .site-row{padding:15px 26px;border-bottom:1px solid var(--border-lt)}
+  .site-row:last-child{border-bottom:0}
+  .site-row .nm{font-size:13.5px;font-weight:500}
+  .site-row .n{font-size:13px;text-align:right}
+  .share{height:8px;background:var(--chip-bg);border-radius:4px}
+  .share>div{height:100%;background:var(--data-1);border-radius:4px}
+
+  @media(max-width:900px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .row-chart{grid-template-columns:1fr}
+    .row2{grid-template-columns:1fr}
+    h1{font-size:36px}
+  }
+
+  /* auth cluster + login modal (added Step 3) */
+  .topbar .back{margin-left:0}
+  .tb-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+  .whoami{font-size:12.5px;color:var(--brand-blue);font-weight:600}
+  .linkbtn{font:inherit;font-size:12.5px;color:var(--muted);background:none;border:0;padding:0;cursor:pointer}
+  .linkbtn:hover{color:var(--accent-text)}
+  .companysel{font:inherit;font-size:12.5px;color:var(--ink);background:var(--panel);border:1px solid var(--border);border-radius:var(--r-input);padding:8px 10px}
+  .hidden{display:none !important}
+  .mask{position:fixed;inset:0;background:rgba(12,33,53,.42);display:none;align-items:flex-start;justify-content:center;padding:80px 16px;z-index:50;overflow:auto}
+  .mask.on{display:flex}
+  .modal{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);width:100%;max-width:400px;box-shadow:0 30px 70px -30px rgba(14,42,68,.6)}
+  .modal .mhead{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
+  .modal .mhead h2{font-family:var(--font-display);font-weight:400;font-size:22px;margin:0}
+  .modal .mclose{font-size:20px;line-height:1;color:var(--muted);background:none;border:0;cursor:pointer}
+  .modal .mbody{padding:22px}
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+  .field label{font-size:12px;color:var(--muted-2)}
+  .field input{font:inherit;font-size:14px;padding:9px 10px;border:1px solid var(--border);border-radius:var(--r-input);background:var(--paper-lt)}
+  .btn-primary{font:inherit;font-size:13px;padding:9px 15px;border-radius:var(--r-input);border:1px solid var(--brand-blue);background:var(--brand-blue);color:#fff;font-weight:500;cursor:pointer;width:100%}
+  .msg.err{color:#9b2c2c;font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <img id="logo" alt="">
+  <span class="brand" id="brandname">Wellness Tools</span>
+  <div class="tb-right">
+    <span class="whoami" id="whoami"></span>
+    <button class="linkbtn" id="loginBtn" onclick="openLogin()">Log in</button>
+    <button class="linkbtn hidden" id="logoutBtn" onclick="doLogout()">Sign out</button>
+    <a class="back" href="index.html">&larr; Back to tools</a>
+  </div>
+</div>
+
+<main>
+  <div class="head">
+    <div>
+      <div class="eyebrow"><span></span>Reports</div>
+      <h1>Usage, <em>at a glance.</em></h1>
+      <p class="lede" id="lede">How your organization is using the wellness tools.</p>
+    </div>
+    <div class="head-ctl">
+      <div class="seg" id="range">
+        <button data-r="30">30 days</button>
+        <button data-r="90" class="on">90 days</button>
+        <button data-r="365">12 months</button>
+      </div>
+      <select id="companySel" class="companysel hidden"></select>
+      <button class="dt-btn" id="exportBtn">Export CSV</button>
+    </div>
+  </div>
+
+  <div class="notice" id="demo">Showing sample data. Live figures appear here once activity tracking is switched on.</div>
+
+  <!-- KPI row -->
+  <div class="kpis" id="kpis"></div>
+
+  <!-- chart row: activity over time + topic heat -->
+  <div class="row-chart">
+    <div class="panel">
+      <div class="chart-head">
+        <h3>Activity over time</h3>
+        <div class="legend">
+          <span><i style="background:var(--data-1)"></i>Downloads</span>
+          <span><i style="background:var(--data-2)"></i>QR scans</span>
+        </div>
+      </div>
+      <p class="cap">Per month, all sites</p>
+      <div id="trend"></div>
+    </div>
+    <div class="panel">
+      <h3>Topic heat</h3>
+      <p class="cap">Which subjects land, month by month</p>
+      <div class="heat" id="heat"></div>
+      <div class="heat-legend">Lower<span class="grad"></span>Higher</div>
+    </div>
+  </div>
+
+  <!-- bar panels -->
+  <div class="row2">
+    <div class="panel">
+      <h3>Most-downloaded items</h3>
+      <p class="cap">Screens, newsletters, and one-pagers</p>
+      <div class="bars" id="topItems"></div>
+    </div>
+    <div class="panel">
+      <h3>QR scans by item</h3>
+      <p class="cap">Viewer response to on-screen content</p>
+      <div class="bars" id="qrItems"></div>
+    </div>
+  </div>
+
+  <!-- per-site breakdown -->
+  <div class="sitecard">
+    <div class="sh">
+      <h3>Per-site breakdown</h3>
+      <p>Activity across locations</p>
+    </div>
+    <div class="site-grid site-hd">
+      <span>Site</span><span class="nw">Share of downloads</span>
+      <span class="r">Downloads</span><span class="r">QR scans</span><span class="r">Translations</span>
+    </div>
+    <div id="siteRows"></div>
+  </div>
+</main>
+
+<script>
+const DRL_API    = "https://n8n-admin.willclower.com/webhook/drl";
+const LOGIN_URL  = DRL_API + "/login";
+const REPORT_URL = DRL_API + "/report";
+const CONFIG_URL = "https://n8n-admin.willclower.com/webhook/hub-config";
+
+// ---- SAMPLE DATA (fallback for panels not yet wired to a live source) ------
+// Data shape hub/report must return. All panels come back in one payload.
+const SAMPLE = {  // fallback for panels whose live source is not wired yet
+
+  kpis: [
+    // spark = a normalized 0..1 series; rendered into a 200x40 sparkline.
+    { l:"Downloads",    v:1284, d:"\u25B2 18%", spark:[0.15,0.25,0.40,0.33,0.60,0.53,0.75,0.80,0.90] },
+    { l:"QR scans",     v:392,  d:"\u25B2 9%",  spark:[0.20,0.15,0.30,0.25,0.45,0.38,0.55,0.60,0.70], accent:true },
+    { l:"Translations", v:167,  d:"\u25B2 24%", spark:[0.10,0.18,0.22,0.45,0.40,0.62,0.65,0.85,0.92], line:"#17402F" },
+    // inverted value-proof card
+    { l:"Reused documents", v:58, d:"of 167", inv:true, pct:35, note:"35% of translations came free from your library" }
+  ],
+  trend: [
+    { m:"May", dl:140, qr:38 }, { m:"Jun", dl:172, qr:44 },
+    { m:"Jul", dl:238, qr:71 }, { m:"Aug", dl:201, qr:63 },
+    { m:"Sep", dl:255, qr:80 }, { m:"Oct", dl:278, qr:96 }
+  ],
+  // topic heat: months = column headers; each row = subject + one intensity (0..1) per month
+  heat: {
+    months: ["May","Jun","Jul","Aug","Sep","Oct"],
+    rows: [
+      { name:"Heat",          v:[0.35,0.60,0.95,0.80,0.40,0.18] },
+      { name:"Mental health", v:[0.55,0.45,0.50,0.65,0.70,0.60] },
+      { name:"Prevention",    v:[0.20,0.28,0.30,0.50,0.75,0.90] },
+      { name:"Nutrition",     v:[0.25,0.30,0.35,0.40,0.45,0.50] },
+      { name:"Sleep",         v:[0.15,0.20,0.22,0.30,0.35,0.42] }
+    ]
+  },
+  topItems: [
+    { name:"Heat / hydration", v:214 },
+    { name:"Mental health", v:186 },
+    { name:"October newsletter", v:151 },
+    { name:"Screening flyer", v:132 },
+    { name:"Sleep one-pager", v:98 }
+  ],
+  qrItems: [
+    { name:"Heat / hydration", v:132 },
+    { name:"Mental health", v:98 },
+    { name:"Screening", v:76 },
+    { name:"EAP contact", v:52 },
+    { name:"Flu shot", v:34 }
+  ],
+  sites: [
+    { name:"Dallas",  dl:512, qr:151, tr:64 },
+    { name:"Houston", dl:438, qr:138, tr:59 },
+    { name:"Austin",  dl:334, qr:103, tr:44 }
+  ]
+};
+// ---- session + auth (shared with the builder via sessionStorage "mw_am") ----
+let SESSION = null;                       // { session, am:{id,name,is_super_admin} }
+let STATE   = { range:90, client_filter:"" };
+function loadSession(){ try{ const v=sessionStorage.getItem("mw_am"); if(v) SESSION=JSON.parse(v); }catch(e){} }
+function saveSession(){ try{ sessionStorage.setItem("mw_am", JSON.stringify(SESSION)); }catch(e){} }
+function clearSession(){ SESSION=null; try{ sessionStorage.removeItem("mw_am"); }catch(e){} }
+function show(id){ document.getElementById(id).classList.add("on"); }
+function hide(id){ document.getElementById(id).classList.remove("on"); }
+function openLogin(){ document.getElementById("liErr").classList.add("hidden"); show("loginMask"); }
+function paintAuth(){
+  const inn=!!SESSION;
+  document.getElementById("loginBtn").classList.toggle("hidden", inn);
+  document.getElementById("logoutBtn").classList.toggle("hidden", !inn);
+  document.getElementById("whoami").textContent = inn ? (SESSION.am.name||"") : "";
+}
+async function doLogin(){
+  const email=document.getElementById("liEmail").value.trim();
+  const pwd=document.getElementById("liPwd").value;
+  const err=document.getElementById("liErr"); err.classList.add("hidden");
+  try{
+    const res=await fetch(LOGIN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pwd})});
+    const d=await res.json();
+    if(!d||!d.ok){ err.classList.remove("hidden"); return; }
+    SESSION={session:d.session, am:d.am}; saveSession(); paintAuth(); hide("loginMask"); boot();
+  }catch(e){ err.classList.remove("hidden"); }
+}
+function doLogout(){ clearSession(); paintAuth(); STATE.client_filter=""; document.getElementById("companySel").classList.add("hidden"); boot(); }
+
+// ---- map the live /report payload into the render shape ----
+function normSpark(vals){ const m=Math.max.apply(null, vals.concat([1])); return vals.map(v=>v/m); }
+function downsample(arr,n){ if(arr.length<=n) return arr.slice(); const out=[]; const step=(arr.length-1)/(n-1); for(let i=0;i<n;i++) out.push(arr[Math.round(i*step)]); return out; }
+function halfDelta(vals){ const h=Math.floor(vals.length/2); if(h<1) return null; let a=0,b=0; for(let i=0;i<h;i++)a+=vals[i]; for(let i=h;i<vals.length;i++)b+=vals[i]; if(!a) return null; return Math.round((b-a)/a*100); }
+function deltaStr(v){ if(v==null) return ""; return (v>=0?"\u25B2 ":"\u25BC ")+Math.abs(v)+"%"; }
+function toMonthly(series){
+  const map={}, order=[];
+  series.forEach(s=>{ const k=s.date.slice(0,7); if(!(k in map)){ map[k]={dl:0,qr:0}; order.push(k); } map[k].dl+=s.downloads; map[k].qr+=s.scans; });
+  const mn=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return order.map(k=>({ m:mn[parseInt(k.slice(5,7),10)-1], dl:map[k].dl, qr:map[k].qr }));
+}
+function mapReport(rep){
+  const t=rep.totals||{}, series=rep.series||[];
+  const dlS=series.map(s=>s.downloads), qrS=series.map(s=>s.scans);
+  const kpis=[
+    { l:"Downloads", v:t.downloads||0, d:deltaStr(halfDelta(dlS)), spark:normSpark(downsample(dlS,9)) },
+    { l:"QR scans",  v:t.scans||0,     d:deltaStr(halfDelta(qrS)), spark:normSpark(downsample(qrS,9)), accent:true },
+    SAMPLE.kpis[2],   // Translations — sample until wired
+    SAMPLE.kpis[3]    // Reused documents — sample until wired
+  ];
+  const assets=rep.by_asset||[];
+  const topItems=assets.slice().sort((a,b)=>b.downloads-a.downloads).slice(0,5).map(a=>({name:a.label,v:a.downloads}));
+  const qrItems=assets.filter(a=>a.scans>0).sort((a,b)=>b.scans-a.scans).slice(0,5).map(a=>({name:a.label,v:a.scans}));
+  const trend=toMonthly(series);
+  return {
+    kpis,
+    trend: trend.length?trend:SAMPLE.trend,
+    heat: SAMPLE.heat,     // no subject-tag source yet
+    topItems: topItems.length?topItems:[{name:"No downloads in range",v:0}],
+    qrItems: qrItems.length?qrItems:[{name:"No scans in range",v:0}],
+    sites: SAMPLE.sites,   // downloads carry no site yet
+    scope: rep.scope||{can_pick_company:false,companies:[]}
+  };
+}
+async function loadData(){
+  if(!SESSION){ return { sample:true, data:SAMPLE }; }
+  const to=new Date(), from=new Date(); from.setDate(from.getDate()-STATE.range);
+  const iso=d=>d.toISOString().slice(0,10);
+  const body={ session:SESSION.session, client_filter:STATE.client_filter||"", from_date:iso(from), to_date:iso(to) };
+  try{
+    const res=await fetch(REPORT_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const d=await res.json();
+    if(!d||!d.ok){ if(d&&d.error==="unauthorized"){ clearSession(); paintAuth(); openLogin(); } return { sample:true, data:SAMPLE }; }
+    return { sample:false, data:mapReport(d.report) };
+  }catch(e){ return { sample:true, data:SAMPLE }; }
+}
+function updateNotice(sample){
+  const el=document.getElementById("demo");
+  el.classList.remove("hidden");
+  el.textContent = !SESSION
+    ? "Sign in to see your organization\u2019s live figures. Sample data shown below."
+    : (sample ? "Couldn\u2019t reach live figures \u2014 showing sample data."
+              : "Downloads and QR scans are live. Translations, reused documents, topic heat, and per-site are sample until their sources are connected.");
+}
+function updatePicker(scope){
+  const sel=document.getElementById("companySel");
+  if(scope && scope.can_pick_company && (scope.companies||[]).length){
+    sel.innerHTML='<option value="">All companies</option>'+scope.companies.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
+    sel.value=STATE.client_filter||""; sel.classList.remove("hidden");
+  } else { sel.classList.add("hidden"); }
+}
+// --------------------------------------------------------------------------
+
+function cssVar(name, fb){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fb; }
+
+function applyBrand(bc){
+  if(!bc) return;
+  const c=bc.colors||{}, r=document.documentElement.style;
+  if(c.blue){ r.setProperty('--brand-blue',c.blue); r.setProperty('--data-1',c.blue); }
+  if(c.navy){ r.setProperty('--brand-navy',c.navy); r.setProperty('--ink',c.navy); }
+  if(c.orange){ r.setProperty('--brand-orange',c.orange); r.setProperty('--accent',c.orange); r.setProperty('--data-2',c.orange); }
+  if(c.spruce){ r.setProperty('--brand-spruce',c.spruce); r.setProperty('--library',c.spruce); }
+  if(bc.logo){ const l=document.getElementById('logo'); l.src=bc.logo; l.style.display='block'; }
+}
+
+// ---- KPI sparkline (200x40, non-scaling stroke via preserveAspectRatio) ----
+function sparkPath(series){
+  const W=200, H=40, pad=4, n=series.length;
+  return series.map((s,i)=>{
+    const x = n===1 ? W/2 : (i/(n-1))*W;
+    const y = pad + (1-s)*(H-pad*2);
+    return `${i?'L':'M'}${x.toFixed(0)} ${y.toFixed(0)}`;
+  }).join(' ');
+}
+function renderKpis(kpis){
+  document.getElementById('kpis').innerHTML = kpis.map(k=>{
+    if(k.inv){
+      return `<div class="kpi inv">
+        <div class="l">${k.l}</div>
+        <div class="top"><span class="v">${k.v.toLocaleString()}</span><span class="d">${k.d}</span></div>
+        <div class="bar"><div style="width:${k.pct}%"></div></div>
+        <div class="note">${k.note}</div>
+      </div>`;
+    }
+    const stroke = k.line || (k.accent ? 'var(--data-2)' : 'var(--data-1)');
+    return `<div class="kpi">
+      <div class="l">${k.l}</div>
+      <div class="top"><span class="v">${k.v.toLocaleString()}</span><span class="d">${k.d}</span></div>
+      <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+        <path d="${sparkPath(k.spark)}" fill="none" stroke="${stroke}" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+      </svg>
+    </div>`;
+  }).join('');
+}
+
+// ---- two-series trend chart with area fill + draw-in animation ----
+function trendChart(el, data){
+  const W=640, H=260, pad={l:46,r:20,t:20,b:40};
+  const iw=W-pad.l-pad.r, ih=H-pad.t-pad.b;
+  const rawMax=Math.max(...data.flatMap(d=>[d.dl,d.qr]));
+  const max=Math.ceil(rawMax/75)*75 || 75;            // round to a clean 75-step for labels
+  const x=i=>pad.l+(i+0.5)/data.length*iw;
+  const y=v=>pad.t+ih-(v/max)*ih;
+  const blue=cssVar('--data-1','#236192');
+  const orange=cssVar('--data-2','#ED8B00');
+  const panel=cssVar('--panel','#FFFDF9');
+
+  const grid=[0,.25,.5,.75,1].map(f=>{
+    const yy=pad.t+ih-f*ih, val=Math.round(max*f);
+    return `<line x1="${pad.l}" y1="${yy.toFixed(0)}" x2="${W-pad.r}" y2="${yy.toFixed(0)}" stroke="var(--border-lt)"/>
+            <text x="${pad.l-10}" y="${(yy+4).toFixed(0)}" text-anchor="end" font-family="Instrument Sans" font-size="11" fill="var(--faint)">${val}</text>`;
+  }).join('');
+  const xlab=data.map((d,i)=>`<text x="${x(i).toFixed(0)}" y="${H-14}" text-anchor="middle" font-family="Instrument Sans" font-size="11" fill="var(--faint)">${d.m}</text>`).join('');
+
+  const pts=key=>data.map((d,i)=>`${x(i).toFixed(0)} ${y(d[key]).toFixed(0)}`);
+  const dlPts=pts('dl'), qrPts=pts('qr');
+  const area=`${dlPts.map((p,i)=>`${i?'L':'M'}${p}`).join(' ')} L${x(data.length-1).toFixed(0)} ${(pad.t+ih)} L${x(0).toFixed(0)} ${(pad.t+ih)} Z`;
+  const line=(arr)=>arr.map((p,i)=>`${i?'L':'M'}${p}`).join(' ');
+  const dots=(arr,color)=>arr.map(p=>{const[cx,cy]=p.split(' ');return `<circle cx="${cx}" cy="${cy}" r="4" fill="${panel}" stroke="${color}" stroke-width="2"/>`;}).join('');
+
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Activity over time">
+    <g>${grid}</g>
+    <g>${xlab}</g>
+    <path d="${area}" fill="rgba(18,57,91,0.07)"></path>
+    <path d="${line(dlPts)}" fill="none" stroke="${blue}" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="1200" style="animation:drawLine 1.4s ease-out forwards"></path>
+    <path d="${line(qrPts)}" fill="none" stroke="${orange}" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="1200" style="animation:drawLine 1.8s ease-out forwards"></path>
+    ${dots(dlPts,blue)}${dots(qrPts,orange)}
+  </svg>`;
+}
+
+// ---- topic heat grid ----
+function renderHeat(el, heat){
+  let html = `<span></span>` + heat.months.map(m=>`<span class="mh">${m}</span>`).join('');
+  heat.rows.forEach(row=>{
+    html += `<span class="rl">${row.name}</span>`;
+    html += row.v.map(a=>`<span class="cell" style="background:rgba(18,57,91,${a})"></span>`).join('');
+  });
+  el.innerHTML = html;
+}
+
+// ---- bar panels ----
+function barList(el, rows, accent){
+  const max=Math.max(...rows.map(r=>r.v),1);
+  el.innerHTML=rows.map(r=>`
+    <div class="bar">
+      <div class="brow"><span>${r.name}</span><span class="bnum">${r.v}</span></div>
+      <div class="track"><div class="fill ${accent?'o':''}" style="width:${Math.round(r.v/max*100)}%"></div></div>
+    </div>`).join('');
+}
+
+// ---- per-site rows (share bar proportional to downloads) ----
+function renderSites(el, sites){
+  const total=sites.reduce((a,s)=>a+s.dl,0)||1;
+  el.innerHTML=sites.map(s=>`
+    <div class="site-grid site-row">
+      <span class="nm">${s.name}</span>
+      <div class="share"><div style="width:${Math.round(s.dl/total*100)}%"></div></div>
+      <span class="n">${s.dl}</span><span class="n">${s.qr}</span><span class="n">${s.tr}</span>
+    </div>`).join('');
+}
+
+function render(data){
+  renderKpis(data.kpis);
+  trendChart(document.getElementById('trend'), data.trend);
+  renderHeat(document.getElementById('heat'), data.heat);
+  barList(document.getElementById('topItems'), data.topItems, false);
+  barList(document.getElementById('qrItems'), data.qrItems, true);
+  renderSites(document.getElementById('siteRows'), data.sites);
+}
+
+function wireSeg(id){
+  document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); STATE.range=parseInt(b.dataset.r,10)||90; boot();
+  });
+}
+
+async function boot(){
+  const r=await loadData();
+  render(r.data);
+  updateNotice(r.sample);
+  updatePicker(r.sample?null:r.data.scope);
+}
+
+async function init(){
+  try{
+    const res=await fetch(CONFIG_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    let cfg=await res.json(); if(Array.isArray(cfg)) cfg=cfg[0];
+    applyBrand(cfg.brand_config);
+    const nm=(cfg.brand_config&&cfg.brand_config.name)||cfg.name;
+    document.getElementById('brandname').textContent=nm||'Wellness Tools';
+    document.getElementById('lede').textContent=`How ${nm||'your organization'} is using the wellness tools.`;
+    document.title=(nm?nm+' \u2014 ':'')+'Reports';
+  }catch(e){ /* branding best-effort */ }
+  wireSeg('range');
+  document.getElementById('companySel').onchange=(e)=>{ STATE.client_filter=e.target.value||""; boot(); };
+  document.getElementById('exportBtn').onclick=()=>{ /* CSV export wired later */ };
+  loadSession(); paintAuth();
+  boot();
+  if(!SESSION) openLogin();
+}
+init();
+</script>
+
+<div class="mask" id="loginMask">
+  <div class="modal">
+    <div class="mhead"><h2>Log in</h2><button class="mclose" onclick="hide('loginMask')">&times;</button></div>
+    <div class="mbody">
+      <div class="field"><label for="liEmail">Email</label><input id="liEmail" type="email" autocomplete="username"></div>
+      <div class="field"><label for="liPwd">Password</label><input id="liPwd" type="password" autocomplete="current-password"></div>
+      <p class="msg err hidden" id="liErr">Login failed. Check your details.</p>
+      <button class="btn-primary" onclick="doLogin()">Log in</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
