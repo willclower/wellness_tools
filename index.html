@@ -6,63 +6,80 @@
 <title>Wellness Tools</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="wellness-tools-tokens.css">
+<link rel="stylesheet" href="studio-brand.css">
+<script src="studio-brand.js"></script>
 <style>
-  .top{display:flex;align-items:center;gap:12px;padding:16px 34px;background:#fbfaf7;border-bottom:1px solid var(--border)}
-  .top img{height:26px;display:none}
-  .top .name{font-weight:600;color:var(--brand-blue);font-size:15px}
-  .top .tenant{margin-left:auto;font-size:12.5px;color:var(--muted)}
-
+  /* wellness-tools-tokens.css stays loaded for reports.html parity; its names are re-pointed
+     at studio-brand (--sb-*) here so this page follows the tenant brand / MedWell default. */
+  :root{
+    --brand-blue:var(--sb-primary); --brand-navy:var(--sb-primary-deep); --brand-orange:var(--sb-accent);
+    --accent:var(--sb-accent); --accent-text:var(--sb-accent-text); --library:var(--sb-primary);
+    --ink:var(--sb-ink); --paper:var(--sb-bg); --paper-lt:var(--sb-bg-lt); --panel:var(--sb-panel);
+    --border:var(--sb-border); --border-lt:var(--sb-border-lt); --muted:var(--sb-muted); --muted-2:var(--sb-subtle);
+    --subtle:var(--sb-subtle); --faint:var(--sb-faint); --chip-bg:var(--sb-tint); --positive:var(--sb-ok);
+    --font-display:var(--sb-font); --font-ui:var(--sb-font); --r-card:var(--sb-r-card); --shadow-card:var(--sb-shadow-lg);
+  }
+  body{font-family:var(--sb-font);background:var(--sb-bg);color:var(--sb-ink);}
   main{padding:0 0 60px}
-  .hero{padding:54px 34px 40px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#F6F3ED 0%,#F1EDE4 100%)}
-  .hero-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:56px;align-items:end}
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-text);margin-bottom:22px}
-  .eyebrow span{width:22px;height:1px;background:var(--accent)}
-  h1{font-family:var(--font-display);font-weight:300;font-size:58px;line-height:1.02;letter-spacing:-.015em;margin:0 0 18px}
-  h1 em{font-style:italic;color:#1D5B7E}
-  .lede{margin:0;font-size:15px;line-height:1.6;color:var(--muted);max-width:46ch}
+  .hero{background:var(--sb-panel);border-bottom:1px solid var(--sb-border);}
+  .hero-in{max-width:1240px;margin:0 auto;padding:34px clamp(16px,3vw,34px) 32px;display:grid;
+    grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:end}
+  .eyebrow{display:flex;align-items:center;gap:10px;font-size:10.5px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--sb-accent-text);margin-bottom:10px}
+  .eyebrow span{width:24px;height:3px;border-radius:2px;background:var(--sb-accent)}
+  h1{font-family:var(--sb-font);font-weight:800;font-size:clamp(28px,3.4vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 10px}
+  h1 em{font-style:normal;color:var(--sb-accent-text)}
+  .lede{margin:0;font-size:14px;line-height:1.55;color:var(--sb-muted);max-width:52ch}
 
-  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden}
-  .kpi{background:var(--panel);padding:18px 20px}
-  .kpi .l{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin-bottom:8px}
-  .kpi .v{font-family:var(--font-display);font-size:30px;line-height:1}
-  .kpi .d{font-size:11px;color:var(--positive);margin-top:6px}
-  .kpi .d.flat{color:var(--subtle)}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .kpi{background:var(--sb-panel);border:1px solid var(--sb-border);border-left:4px solid var(--sb-primary);
+    border-radius:var(--sb-r-card);box-shadow:var(--sb-shadow);padding:14px 16px}
+  .kpi .l{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sb-subtle);margin-bottom:6px}
+  .kpi .v{font-size:26px;font-weight:800;line-height:1;color:var(--sb-ink)}
+  .kpi .d{font-size:11.5px;color:var(--sb-ok);margin-top:6px}
+  .kpi .d.flat{color:var(--sb-subtle)}
 
-  .tools{padding:40px 34px 0;max-width:1240px;margin:0 auto}
-  .tools-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-  .tool{display:block;background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;transition:border-color .13s,box-shadow .13s}
-  .tool:hover{border-color:var(--ink);box-shadow:var(--shadow-card)}
-  .tool.disabled{opacity:.55;pointer-events:none}
-  .art{height:128px;position:relative;overflow:hidden}
-  .tbody{padding:22px 22px 20px}
-  .tbody .idx{font-family:var(--font-display);font-size:12px;color:var(--accent-text);margin-bottom:8px}
-  .tbody h3{font-family:var(--font-display);font-weight:400;font-size:24px;margin:0 0 10px}
-  .tbody p{margin:0 0 18px;font-size:13.5px;line-height:1.6;color:var(--muted)}
-  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
-  .cta{font-size:13px;font-weight:500;color:var(--brand-blue);border-bottom:2px solid var(--accent);padding-bottom:2px}
-  .cta.soon{color:var(--subtle);border-bottom-color:var(--border)}
+  .tools{padding:28px clamp(16px,3vw,34px) 0;max-width:1240px;margin:0 auto}
+  .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px}
+  .tool{display:flex;flex-direction:column;background:var(--sb-panel);border:1px solid var(--sb-border);border-radius:var(--sb-r-card);
+    overflow:hidden;box-shadow:var(--sb-shadow);transition:transform .15s,box-shadow .15s;color:inherit;text-decoration:none}
+  .tool:hover{transform:translateY(-3px);box-shadow:var(--sb-shadow-lg);color:inherit}
+  .tool.disabled{opacity:.6;pointer-events:none}
+  .art{height:150px;position:relative;overflow:hidden;background:var(--sb-bg)}
+  .tbody{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+  .tbody h3{font-weight:700;font-size:17px;margin:0 0 6px}
+  .tbody p{margin:0 0 14px;font-size:13px;line-height:1.55;color:var(--sb-muted)}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px}
+  .dt-chip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:var(--sb-r-pill);background:var(--sb-tint);color:var(--sb-primary)}
+  .cta{margin-top:auto;align-self:flex-start;font-size:13px;font-weight:600;color:#fff;background:var(--sb-primary);
+    border-radius:var(--sb-r-input);padding:8px 14px}
+  .tool:hover .cta{background:var(--sb-primary-hover)}
+  .cta.soon{color:var(--sb-subtle);background:var(--sb-bg)}
 
-  .lower{padding:44px 34px 0;max-width:1240px;margin:0 auto}
-  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);padding:24px 26px}
-  .card h3{font-family:var(--font-display);font-weight:400;font-size:20px;margin:0}
-  .cap{margin:0 0 18px;font-size:12.5px;color:var(--subtle)}
-  .act{display:grid;grid-template-columns:22px 1fr auto;gap:14px;align-items:center;padding:13px 0;border-top:1px solid var(--border-lt)}
-  .act .p{font-size:13.5px}.act .s{font-size:11.5px;color:var(--subtle)}.act .t{font-size:11.5px;color:var(--faint)}
+  .lower{padding:28px clamp(16px,3vw,34px) 0;max-width:1240px;margin:0 auto}
+  .card{background:var(--sb-panel);border:1px solid var(--sb-border);border-radius:var(--sb-r-card);box-shadow:var(--sb-shadow);padding:20px 22px}
+  .card h3{font-weight:700;font-size:16px;margin:0}
+  .card .head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px}
+  .card .head a{font-size:12.5px;font-weight:600;color:var(--sb-accent-text)}
+  .cap{margin:0 0 12px;font-size:12.5px;color:var(--sb-subtle)}
+  .act{display:grid;grid-template-columns:22px 1fr auto;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--sb-border-lt)}
+  .act .p{font-size:13.5px}.act .s{font-size:11.5px;color:var(--sb-subtle)}.act .t{font-size:11.5px;color:var(--sb-faint)}
+  .act .ic{color:var(--sb-primary)}
 
-  .demo-note{max-width:1240px;margin:22px auto 0;padding:0 34px}
-  .demo-note .dt-notice{display:inline-block}
-
-  @media(max-width:1040px){.hero-in{grid-template-columns:1fr;gap:32px}.tools-grid{grid-template-columns:1fr}h1{font-size:44px}}
+  .demo-note{max-width:1240px;margin:18px auto 0;padding:0 clamp(16px,3vw,34px)}
+  .dt-notice{display:inline-block;background:var(--sb-panel);border:1px dashed var(--sb-border-st);color:var(--sb-muted);
+    font-size:12px;border-radius:var(--sb-r-input);padding:7px 12px}
+  @media(max-width:900px){.hero-in{grid-template-columns:1fr;gap:24px}}
+  @media(max-width:520px){.sb-header .sb-product{display:none}}
 </style>
 </head>
 <body>
-<div class="top">
-  <img id="logo" alt="">
-  <span class="name" id="brandname">Wellness Tools</span>
-  <span class="tenant" id="tenant"></span>
-</div>
+<header class="sb-header">
+  <img class="sb-logo" id="sbLogo" alt="">
+  <span class="sb-tenant" id="sbTenant"></span>
+  <span class="sb-product">Wellness Tools</span>
+</header>
 
 <main>
   <section class="hero">
@@ -89,14 +106,12 @@
 
   <div class="lower">
     <div class="card">
-      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px">
-        <h3>Recent activity</h3><a href="reports.html" style="font-size:12px;color:var(--muted-2)">View all &rarr;</a>
-      </div>
+      <div class="head"><h3>Recent activity</h3><a href="reports.html">View all reports</a></div>
       <p class="cap">Across your sites</p>
-      <div class="act"><span style="color:var(--library)">&#9638;</span><div><div class="p">&ldquo;Thirsty is already too late.&rdquo; downloaded</div><div class="s">Screen &middot; 16:9</div></div><span class="t">14 min ago</span></div>
-      <div class="act"><span style="color:var(--brand-blue)">&#8646;</span><div><div class="p">August newsletter translated to Vietnamese</div><div class="s">Reused from library &mdash; 0 new spend</div></div><span class="t">1 hr ago</span></div>
-      <div class="act"><span style="color:var(--accent-text)">&#9684;</span><div><div class="p">Q3 usage report exported</div><div class="s">All sites &middot; CSV</div></div><span class="t">Yesterday</span></div>
-      <div class="act"><span style="color:var(--library)">&#9638;</span><div><div class="p">Screening one-pager added to playlist</div><div class="s">Prevention &middot; office</div></div><span class="t">2 days ago</span></div>
+      <div class="act"><span class="ic">&#9638;</span><div><div class="p">&ldquo;Thirsty is already too late.&rdquo; downloaded</div><div class="s">Screen &middot; 16:9</div></div><span class="t">14 min ago</span></div>
+      <div class="act"><span class="ic">&#8646;</span><div><div class="p">August newsletter translated to Vietnamese</div><div class="s">Reused from library &mdash; 0 new spend</div></div><span class="t">1 hr ago</span></div>
+      <div class="act"><span class="ic">&#9684;</span><div><div class="p">Q3 usage report exported</div><div class="s">All sites &middot; CSV</div></div><span class="t">Yesterday</span></div>
+      <div class="act"><span class="ic">&#9638;</span><div><div class="p">Screening one-pager added to playlist</div><div class="s">Prevention &middot; office</div></div><span class="t">2 days ago</span></div>
     </div>
   </div>
 
@@ -112,32 +127,25 @@ const CARD = {
   translation: {
     title: "Document Translation", idx: "01",
     desc: "Upload a Word file, pick a language and tone. Layout, tables, and formatting come back intact \u2014 and reused instantly if it's been done before.",
-    chips: ["18 languages",".docx","Reuse library"], cta: "Open translation \u2192",
+    chips: ["18 languages",".docx","Reuse library"], cta: "Open translation",
     art: `<img src="assets/card-translation.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
   },
   vwl: {
     title: "Visual Wellness Library", idx: "02",
     desc: "Workplace screens, one-pager posters, and the monthly newsletter \u2014 filtered by subject, previewed full-screen, downloaded white-label ready.",
-    chips: ["Screens + print","16:9","New each month"], cta: "Open library \u2192",
+    chips: ["Screens + print","16:9","New each month"], cta: "Open library",
     art: `<img src="assets/card-library.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
   },
   reports: {
     title: "Reports", idx: "03",
     desc: "What's landing and where. Downloads, QR scans, translations, and per-site trends \u2014 exportable for your quarterly review.",
-    chips: ["Per-site","12 months","CSV export"], cta: "Open reports \u2192",
+    chips: ["Per-site","12 months","CSV export"], cta: "Open reports",
     art: `<img src="assets/card-reports.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
   }
 };
 
-function applyBrand(bc){
-  if(!bc) return;
-  const c=bc.colors||{}, r=document.documentElement.style;
-  if(c.blue)  r.setProperty('--brand-blue',c.blue);
-  if(c.navy)  r.setProperty('--brand-navy',c.navy);
-  if(c.orange){r.setProperty('--brand-orange',c.orange);r.setProperty('--accent',c.orange);r.setProperty('--data-2',c.orange);}
-  if(c.spruce){r.setProperty('--brand-spruce',c.spruce);r.setProperty('--library',c.spruce);}
-  if(bc.logo){const l=document.getElementById('logo');l.src=bc.logo;l.style.display='block';}
-}
+// Tenant brand via shared applier (studio-brand.js); none → MedWell defaults.
+function applyBrand(bc, fallbackName){ return StudioBrand.apply(bc, { fallbackName }); }
 
 function isPlaceholder(u){ return !u || /^</.test(u); }
 
@@ -152,7 +160,6 @@ function toolCard(key, url){
   el.innerHTML = `
     <div class="art">${c.art}</div>
     <div class="tbody">
-      <div class="idx">${c.idx}</div>
       <h3>${c.title}</h3>
       <p>${c.desc}</p>
       <div class="chips">${c.chips.map(x=>`<span class="dt-chip">${x}</span>`).join('')}</div>
@@ -166,12 +173,10 @@ async function boot(){
   try{
     const res = await fetch(CONFIG_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
     data = await res.json(); if(Array.isArray(data)) data = data[0];
-    applyBrand(data.brand_config);
-    document.getElementById('brandname').textContent=(data.brand_config&&data.brand_config.name)||data.name||'Wellness Tools';
-    document.getElementById('tenant').textContent=data.name||'';
+    applyBrand(data.brand_config, data.name);
     if(data.name) document.getElementById('lede').textContent=`Ready-made screens, instant translation, and proof it's working. Everything you make stays with ${data.name}.`;
     document.title=(data.name?data.name+' \u2014 ':'')+'Wellness Tools';
-  }catch(e){ /* fall through to defaults + placeholder tiles */ }
+  }catch(e){ applyBrand(null); /* defaults + placeholder tiles */ }
 
   const urls = (data.tool_urls)||{};
   const wrap = document.getElementById('tools'); wrap.innerHTML='';
