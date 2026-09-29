@@ -34,7 +34,12 @@
     set("--sb-accent-text",  c.accent_text || primary);
     loadFont(bc.font || bc.typeface);
     const logoEl = document.getElementById(opts.logoId || "sbLogo");
-    if(logoEl && bc.logo){ logoEl.src = bc.logo; logoEl.style.display = "block"; }
+    if(logoEl && bc.logo){
+      // a missing/broken logo must never leave an empty chip in the header
+      logoEl.onerror = () => { logoEl.style.display = "none"; };
+      logoEl.onload  = () => { logoEl.style.display = "block"; };
+      logoEl.src = bc.logo;
+    }
     const name = bc.name || opts.fallbackName || DEFAULT_NAME;
     if(nameEl) nameEl.textContent = name;
     return name;
