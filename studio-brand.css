@@ -1,0 +1,68 @@
+/* ============================================================================
+   MedWell Studio — shared brand tokens (all Studio pages)
+   Hosted once in wellness_tools; other repos link ../wellness_tools/studio-brand.css
+   DEFAULT = MedWell brand (teal, system font). A white-labeled tenant overrides
+   --sb-primary / --sb-primary-deep / --sb-accent / --sb-font at runtime via
+   studio-brand.js (StudioBrand.apply). Everything else is derived below.
+   Layout never changes per tenant — only these tokens + name + logo.
+   SCOPE: page chrome only. Never load this in render.html / flyer / newsletter /
+   screen render templates — deliverables stay white-label on their own CSS.
+   ============================================================================ */
+:root{
+  /* ---- tenant-overridable (MedWell defaults) ---- */
+  --sb-primary:      #1a6882;   /* buttons, header band, active states   */
+  --sb-primary-deep: #0f4a5f;   /* header band start, deep surfaces      */
+  --sb-accent:       #29a4c4;   /* rules, focus, highlights              */
+  --sb-accent-text:  #1a7a96;   /* accent used as text (AA on white)     */
+  --sb-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* ---- derived (do not set per tenant) ---- */
+  --sb-primary-hover: color-mix(in srgb, var(--sb-primary) 82%, #000);
+  --sb-tint:          color-mix(in srgb, var(--sb-primary) 9%, #fff);
+  --sb-tint-strong:   color-mix(in srgb, var(--sb-primary) 18%, #fff);
+  --sb-ring:          color-mix(in srgb, var(--sb-accent) 28%, transparent);
+  --sb-header-bg:     linear-gradient(100deg, var(--sb-primary-deep) 0%, var(--sb-primary) 100%);
+
+  /* ---- functional (not brand) ---- */
+  --sb-green:      #5e8f12;     /* secondary tag / positive  (MedWell #7ab317, text-safe) */
+  --sb-green-tint: #eef5e1;
+  --sb-danger:     #b91c1c;
+  --sb-ok:         #1e7e4a;
+
+  /* ---- neutrals ---- */
+  --sb-bg:        #f1f5f7;      /* page                                   */
+  --sb-bg-lt:     #f7fafb;
+  --sb-panel:     #ffffff;      /* cards, rail, modals                    */
+  --sb-ink:       #1e2d35;      /* headings / primary text                */
+  --sb-muted:     #4a5e66;      /* body copy                              */
+  --sb-subtle:    #6b7f88;      /* labels, captions                       */
+  --sb-faint:     #8fa3ab;      /* counts, timestamps                     */
+  --sb-border:    #d9e3e8;
+  --sb-border-lt: #e9eff2;
+  --sb-border-st: #c3d1d8;
+
+  /* ---- shape ---- */
+  --sb-r-card:  14px;
+  --sb-r-input: 8px;
+  --sb-r-pill:  999px;
+  --sb-shadow:    0 1px 2px rgba(20,45,56,.06), 0 4px 14px -6px rgba(20,45,56,.10);
+  --sb-shadow-lg: 0 14px 34px -16px rgba(20,45,56,.30);
+}
+
+/* ---- Studio header band (same on every Studio page) ---- */
+.sb-header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:14px clamp(16px,3vw,34px);background:var(--sb-header-bg);color:#fff;font-family:var(--sb-font);}
+.sb-header .sb-logo{height:28px;display:none;background:#fff;border-radius:6px;padding:3px 6px;}
+.sb-header .sb-tenant{font-weight:700;font-size:15px;letter-spacing:-.005em;}
+.sb-header .sb-product{font-size:12.5px;opacity:.85;padding-left:14px;border-left:1px solid rgba(255,255,255,.35);}
+.sb-header .sb-right{margin-left:auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.sb-header a,.sb-header .sb-link{font:inherit;font-size:12.5px;color:#fff;opacity:.9;background:none;border:0;padding:0;cursor:pointer;text-decoration:none;}
+.sb-header a:hover,.sb-header .sb-link:hover{opacity:1;text-decoration:underline;}
+.sb-header .sb-btn-light{font:inherit;font-size:12.5px;font-weight:600;color:var(--sb-primary);background:#fff;
+  border:0;border-radius:var(--sb-r-input);padding:7px 14px;cursor:pointer;}
+.sb-header .sb-btn-light:hover{background:var(--sb-tint);}
+.sb-header .sb-who{font-size:12.5px;font-weight:600;}
+
+/* ---- keyboard focus (all Studio pages) ---- */
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--sb-accent);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
