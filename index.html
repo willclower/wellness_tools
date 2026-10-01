@@ -132,7 +132,7 @@
     <div class="lbox">
       <h2 id="liTitle">Log in to MedWell Studio</h2>
       <p>One login opens every tool you have access to.</p>
-      <input id="liEmail" type="email" placeholder="Email" autocomplete="username">
+      <input id="liEmail" type="text" placeholder="Username" autocomplete="username" autocapitalize="off" spellcheck="false">
       <input id="liPw" type="password" placeholder="Password" autocomplete="current-password">
       <div class="msg" id="liMsg"></div>
       <button type="button" id="liGo">Log in</button>
@@ -222,7 +222,7 @@ async function doLogin(){
   try{
     const res=await fetch(LOGIN_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
     const d=await res.json();
-    if(!d||!d.ok){ m.className='msg err'; m.textContent='Email or password not recognized.'; return; }
+    if(!d||!d.ok){ m.className='msg err'; m.textContent='Username or password not recognized.'; return; }
     StudioAuth.set({ session:d.session, am:d.am });
     document.getElementById('liPw').value='';
     m.className='msg ok'; m.textContent='Signed in.';
