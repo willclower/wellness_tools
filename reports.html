@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="wellness-tools-tokens.css">
+<script src="studio-auth.js"></script>
 <style>
   @keyframes drawLine { from { stroke-dashoffset: 1200; } to { stroke-dashoffset: 0; } }
 
@@ -128,7 +129,7 @@
   <span class="brand" id="brandname">Wellness Tools</span>
   <div class="tb-right">
     <span class="whoami" id="whoami"></span>
-    <button class="linkbtn" id="loginBtn" onclick="openLogin()">Log in</button>
+    <button class="linkbtn hidden" id="loginBtn" onclick="openLogin()">Log in</button>
     <button class="linkbtn hidden" id="logoutBtn" onclick="doLogout()">Sign out</button>
     <a class="back" href="index.html">&larr; Back to tools</a>
   </div>
@@ -260,15 +261,16 @@ const SAMPLE = {  // fallback for panels whose live source is not wired yet
     { name:"Austin",  dl:334, qr:103, tr:44 }
   ]
 };
-// ---- session + auth (shared with the builder via sessionStorage "mw_am") ----
+// ---- session + auth: shared Studio login (StudioAuth, localStorage "mw_am"); log in on the hub ----
 let SESSION = null;                       // { session, am:{id,name,is_super_admin} }
 let STATE   = { range:90, client_filter:"" };
-function loadSession(){ try{ const v=sessionStorage.getItem("mw_am"); if(v) SESSION=JSON.parse(v); }catch(e){} }
-function saveSession(){ try{ sessionStorage.setItem("mw_am", JSON.stringify(SESSION)); }catch(e){} }
-function clearSession(){ SESSION=null; try{ sessionStorage.removeItem("mw_am"); }catch(e){} }
+// No session -> hub, then back here; no 'reports' tool on the account -> hub.
+function loadSession(){ SESSION = StudioAuth.require('reports'); }
+function saveSession(){ StudioAuth.set(SESSION); }
+function clearSession(){ SESSION=null; StudioAuth.clear(); }
 function show(id){ document.getElementById(id).classList.add("on"); }
 function hide(id){ document.getElementById(id).classList.remove("on"); }
-function openLogin(){ document.getElementById("liErr").classList.add("hidden"); show("loginMask"); }
+function openLogin(){ StudioAuth.expired(); }   // expired/missing session -> hub login, then back
 function paintAuth(){
   const inn=!!SESSION;
   document.getElementById("loginBtn").classList.toggle("hidden", inn);
@@ -286,7 +288,7 @@ async function doLogin(){
     SESSION={session:d.session, am:d.am}; saveSession(); paintAuth(); hide("loginMask"); boot();
   }catch(e){ err.classList.remove("hidden"); }
 }
-function doLogout(){ clearSession(); paintAuth(); STATE.client_filter=""; document.getElementById("companySel").classList.add("hidden"); boot(); }
+function doLogout(){ StudioAuth.logout(); }
 
 // ---- map the live /report payload into the render shape ----
 function normSpark(vals){ const m=Math.max.apply(null, vals.concat([1])); return vals.map(v=>v/m); }
@@ -483,8 +485,9 @@ async function boot(){
 }
 
 async function init(){
+  loadSession(); if(!SESSION) return;          // gate first: nothing renders without a login
   try{
-    const res=await fetch(CONFIG_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    const res=await fetch(CONFIG_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session:SESSION.session})});
     let cfg=await res.json(); if(Array.isArray(cfg)) cfg=cfg[0];
     applyBrand(cfg.brand_config);
     const nm=(cfg.brand_config&&cfg.brand_config.name)||cfg.name;
@@ -495,9 +498,8 @@ async function init(){
   wireSeg('range');
   document.getElementById('companySel').onchange=(e)=>{ STATE.client_filter=e.target.value||""; boot(); };
   document.getElementById('exportBtn').onclick=()=>{ /* CSV export wired later */ };
-  loadSession(); paintAuth();
+  paintAuth();
   boot();
-  if(!SESSION) openLogin();
 }
 init();
 </script>
