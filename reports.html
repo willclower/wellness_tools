@@ -6,10 +6,24 @@
 <title>Reports — Wellness Tools</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="wellness-tools-tokens.css">
+<link rel="stylesheet" href="studio-brand.css">
+<script src="studio-brand.js"></script>
 <script src="studio-auth.js"></script>
 <style>
+  /* Studio look: the older wellness-tools token names are re-pointed at studio-brand (--sb-*),
+     same as the hub, so this page follows the tenant brand / MedWell default. */
+  :root{
+    --brand-blue:var(--sb-primary); --brand-navy:var(--sb-primary-deep); --brand-orange:var(--sb-accent);
+    --accent:var(--sb-accent); --accent-text:var(--sb-accent-text); --library:var(--sb-primary);
+    --ink:var(--sb-ink); --cream:#fff; --paper:var(--sb-bg); --paper-lt:var(--sb-bg-lt); --panel:var(--sb-panel);
+    --border:var(--sb-border); --border-lt:var(--sb-border-lt); --muted:var(--sb-muted); --muted-2:var(--sb-subtle);
+    --subtle:var(--sb-subtle); --faint:var(--sb-faint); --chip-bg:var(--sb-tint); --positive:var(--sb-ok);
+    --font-display:var(--sb-font); --font-ui:var(--sb-font); --r-card:var(--sb-r-card); --r-input:var(--sb-r-input);
+    --shadow-card:var(--sb-shadow-lg); --data-1:var(--sb-primary); --data-2:var(--sb-accent);
+    --notice-bg:var(--sb-panel); --notice-bd:var(--sb-border-st); --notice-tx:var(--sb-ink);
+  }
+  body{font-family:var(--sb-font);background:var(--sb-bg);color:var(--sb-ink);margin:0}
   @keyframes drawLine { from { stroke-dashoffset: 1200; } to { stroke-dashoffset: 0; } }
 
   .topbar{display:flex;align-items:center;gap:12px;padding:16px 34px;background:#fbfaf7;border-bottom:1px solid var(--border)}
@@ -22,20 +36,20 @@
 
   /* header */
   .head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap}
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-text);margin-bottom:12px}
-  .eyebrow span{width:22px;height:1px;background:var(--accent)}
-  h1{font-family:var(--font-display);font-weight:300;font-size:44px;line-height:1.04;margin:0 0 8px;letter-spacing:-.015em}
-  h1 em{font-style:italic;color:#1D5B7E}
+  .eyebrow{display:flex;align-items:center;gap:10px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sb-accent-text);margin-bottom:10px}
+  .eyebrow span{width:24px;height:3px;border-radius:2px;background:var(--sb-accent)}
+  h1{font-weight:800;font-size:clamp(26px,3vw,36px);line-height:1.1;margin:0 0 8px;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--sb-accent-text)}
   .lede{margin:0;font-size:13.5px;color:var(--muted)}
   .head-ctl{display:flex;gap:8px}
   .seg{display:flex;background:var(--panel);border:1px solid var(--border);border-radius:var(--r-input);overflow:hidden;font-size:12.5px}
   .seg button{border:0;background:transparent;padding:8px 13px;font:inherit;font-size:12.5px;color:var(--muted);cursor:pointer}
   .seg button.on{background:var(--ink);color:var(--cream);font-weight:600}
 
-  .notice{margin:22px 0 24px;padding:11px 16px;background:var(--notice-bg);border:1px solid var(--notice-bd);border-radius:var(--r-input);font-size:12.5px;color:var(--notice-tx)}
+  .notice{margin:22px 0 24px;padding:9px 14px;background:var(--sb-panel);border:1px solid var(--sb-border-st);border-left:4px solid var(--sb-accent);border-radius:var(--sb-r-input);font-size:13px;color:var(--sb-ink)}
 
-  .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);padding:24px 26px}
-  .panel h3{font-family:var(--font-display);font-weight:400;font-size:20px;margin:0 0 2px}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);padding:22px 24px;box-shadow:var(--sb-shadow)}
+  .panel h3{font-weight:700;font-size:16px;margin:0 0 2px}
   .panel .cap{margin:0 0 18px;font-size:12px;color:var(--subtle)}
 
   /* KPI row */
@@ -43,7 +57,7 @@
   .kpi{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);padding:20px 20px 12px}
   .kpi .l{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin-bottom:10px}
   .kpi .top{display:flex;align-items:flex-end;gap:10px}
-  .kpi .v{font-family:var(--font-display);font-size:36px;line-height:1}
+  .kpi .v{font-weight:800;font-size:30px;line-height:1}
   .kpi .d{font-size:11.5px;color:var(--positive);padding-bottom:4px}
   .kpi svg{width:100%;height:40px;margin-top:12px}
   .kpi.inv{background:var(--ink);color:var(--cream)}
@@ -67,13 +81,13 @@
   .heat .rl{font-size:11.5px;color:var(--muted)}
   .heat .cell{height:26px;border-radius:3px}
   .heat-legend{display:flex;align-items:center;gap:8px;margin-top:18px;font-size:10.5px;color:var(--faint)}
-  .heat-legend .grad{flex:1;height:6px;border-radius:4px;background:linear-gradient(90deg,rgba(18,57,91,.12),rgba(18,57,91,.95))}
+  .heat-legend .grad{flex:1;height:6px;border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--sb-primary) 12%,#fff),var(--sb-primary))}
 
   /* bar panels */
   .row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
   .bars{display:flex;flex-direction:column;gap:13px}
   .bar .brow{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
-  .bar .bnum{font-family:var(--font-display);font-size:15px}
+  .bar .bnum{font-weight:700;font-size:13px}
   .track{height:6px;background:var(--chip-bg);border-radius:4px}
   .fill{height:100%;border-radius:4px;background:var(--data-1)}
   .fill.o{background:var(--data-2)}
@@ -81,7 +95,7 @@
   /* per-site table */
   .sitecard{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);margin-top:16px;overflow:hidden}
   .sitecard .sh{padding:22px 26px 16px}
-  .sitecard .sh h3{font-family:var(--font-display);font-weight:400;font-size:20px;margin:0 0 2px}
+  .sitecard .sh h3{font-weight:700;font-size:16px;margin:0 0 2px}
   .sitecard .sh p{margin:0;font-size:12px;color:var(--subtle)}
   .site-grid{display:grid;grid-template-columns:140px minmax(120px,1fr) 84px 84px 92px;gap:18px;align-items:center}
   .site-hd{padding:11px 26px;background:var(--paper-lt);border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
@@ -113,7 +127,7 @@
   .mask.on{display:flex}
   .modal{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);width:100%;max-width:400px;box-shadow:0 30px 70px -30px rgba(14,42,68,.6)}
   .modal .mhead{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
-  .modal .mhead h2{font-family:var(--font-display);font-weight:400;font-size:22px;margin:0}
+  .modal .mhead h2{font-weight:700;font-size:18px;margin:0}
   .modal .mclose{font-size:20px;line-height:1;color:var(--muted);background:none;border:0;cursor:pointer}
   .modal .mbody{padding:22px}
   .field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
@@ -124,16 +138,17 @@
 </style>
 </head>
 <body>
-<div class="topbar">
-  <img id="logo" alt="">
-  <span class="brand" id="brandname">Wellness Tools</span>
-  <div class="tb-right">
-    <span class="whoami" id="whoami"></span>
-    <button class="linkbtn hidden" id="loginBtn" onclick="openLogin()">Log in</button>
-    <button class="linkbtn hidden" id="logoutBtn" onclick="doLogout()">Sign out</button>
-    <a class="back" href="index.html">&larr; Back to tools</a>
+<header class="sb-header">
+  <img class="sb-logo" id="sbLogo" alt="">
+  <span class="sb-tenant" id="sbTenant"></span>
+  <span class="sb-product">Reports</span>
+  <div class="sb-right">
+    <span class="who" id="whoami"></span>
+    <button class="sb-link hidden" id="loginBtn" onclick="openLogin()">Log in</button>
+    <button class="sb-link hidden" id="logoutBtn" onclick="doLogout()">Log out</button>
+    <a href="index.html">&larr; Back to tools</a>
   </div>
-</div>
+</header>
 
 <main>
   <div class="head">
@@ -198,7 +213,7 @@
   <div class="sitecard">
     <div class="sh">
       <h3>Per-site breakdown</h3>
-      <p>QR activity by location (downloads don\u2019t carry a site)</p>
+      <p>QR activity by location (downloads don&rsquo;t carry a site)</p>
     </div>
     <div class="site-grid site-hd">
       <span>Site</span><span class="nw">Share of scans</span>
@@ -320,15 +335,7 @@ function updatePicker(scope){
 
 function cssVar(name, fb){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fb; }
 
-function applyBrand(bc){
-  if(!bc) return;
-  const c=bc.colors||{}, r=document.documentElement.style;
-  if(c.blue){ r.setProperty('--brand-blue',c.blue); r.setProperty('--data-1',c.blue); }
-  if(c.navy){ r.setProperty('--brand-navy',c.navy); r.setProperty('--ink',c.navy); }
-  if(c.orange){ r.setProperty('--brand-orange',c.orange); r.setProperty('--accent',c.orange); r.setProperty('--data-2',c.orange); }
-  if(c.spruce){ r.setProperty('--brand-spruce',c.spruce); r.setProperty('--library',c.spruce); }
-  if(bc.logo){ const l=document.getElementById('logo'); l.src=bc.logo; l.style.display='block'; }
-}
+function applyBrand(bc, name){ return StudioBrand.apply(bc||null, { fallbackName:name }); }
 
 // ---- KPI sparkline (200x40, non-scaling stroke via preserveAspectRatio) ----
 function sparkPath(series){
@@ -376,9 +383,9 @@ function trendChart(el, data){
   const grid=[0,.25,.5,.75,1].map(f=>{
     const yy=pad.t+ih-f*ih, val=Math.round(max*f);
     return `<line x1="${pad.l}" y1="${yy.toFixed(0)}" x2="${W-pad.r}" y2="${yy.toFixed(0)}" stroke="var(--border-lt)"/>
-            <text x="${pad.l-10}" y="${(yy+4).toFixed(0)}" text-anchor="end" font-family="Instrument Sans" font-size="11" fill="var(--faint)">${val}</text>`;
+            <text x="${pad.l-10}" y="${(yy+4).toFixed(0)}" text-anchor="end" font-size="11" fill="var(--faint)">${val}</text>`;
   }).join('');
-  const xlab=data.map((d,i)=>`<text x="${x(i).toFixed(0)}" y="${H-14}" text-anchor="middle" font-family="Instrument Sans" font-size="11" fill="var(--faint)">${d.m}</text>`).join('');
+  const xlab=data.map((d,i)=>`<text x="${x(i).toFixed(0)}" y="${H-14}" text-anchor="middle" font-size="11" fill="var(--faint)">${d.m}</text>`).join('');
 
   const pts=key=>data.map((d,i)=>`${x(i).toFixed(0)} ${y(d[key]).toFixed(0)}`);
   const dlPts=pts('dl'), qrPts=pts('qr');
@@ -389,7 +396,7 @@ function trendChart(el, data){
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Activity over time">
     <g>${grid}</g>
     <g>${xlab}</g>
-    <path d="${area}" fill="rgba(18,57,91,0.07)"></path>
+    <path d="${area}" fill="color-mix(in srgb, var(--sb-primary) 8%, transparent)"></path>
     <path d="${line(dlPts)}" fill="none" stroke="${blue}" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="1200" style="animation:drawLine 1.4s ease-out forwards"></path>
     <path d="${line(qrPts)}" fill="none" stroke="${orange}" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="1200" style="animation:drawLine 1.8s ease-out forwards"></path>
     ${dots(dlPts,blue)}${dots(qrPts,orange)}
@@ -402,7 +409,7 @@ function renderHeat(el, heat){
   let html = `<span></span>` + heat.months.map(m=>`<span class="mh">${m}</span>`).join('');
   heat.rows.forEach(row=>{
     html += `<span class="rl">${row.name}</span>`;
-    html += row.v.map(a=>`<span class="cell" style="background:rgba(18,57,91,${a})"></span>`).join('');
+    html += row.v.map(a=>`<span class="cell" style="background:color-mix(in srgb, var(--sb-primary) ${Math.round(a*100)}%, #fff)"></span>`).join('');
   });
   el.innerHTML = html;
   el.style.gridTemplateColumns = `96px repeat(${heat.months.length}, minmax(0,1fr))`;
@@ -459,12 +466,11 @@ async function init(){
   try{
     const res=await fetch(CONFIG_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session:SESSION.session})});
     let cfg=await res.json(); if(Array.isArray(cfg)) cfg=cfg[0];
-    applyBrand(cfg.brand_config);
     const nm=(cfg.brand_config&&cfg.brand_config.name)||cfg.name;
-    document.getElementById('brandname').textContent=nm||'Wellness Tools';
+    applyBrand(cfg.brand_config, nm);
     document.getElementById('lede').textContent=`How ${nm||'your organization'} is using the wellness tools.`;
     document.title=(nm?nm+' \u2014 ':'')+'Reports';
-  }catch(e){ /* branding best-effort */ }
+  }catch(e){ applyBrand(null); /* branding best-effort */ }
   wireSeg('range');
   document.getElementById('companySel').onchange=(e)=>{ STATE.client_filter=e.target.value||""; boot(); };
   document.getElementById('exportBtn').onclick=()=>{ /* CSV export wired later */ };
