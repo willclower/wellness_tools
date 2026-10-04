@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report Builder — Wellness Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="wellness-tools-tokens.css">
+<script src="studio-auth.js"></script>
+<style>
+  .topbar{display:flex;align-items:center;gap:12px;padding:16px 34px;background:#fbfaf7;border-bottom:1px solid var(--border)}
+  .topbar img{height:26px;display:none}
+  .topbar .brand{font-weight:600;color:var(--brand-blue);font-size:15px}
+  .tb-right{margin-left:auto;display:flex;align-items:center;gap:16px;font-size:12.5px}
+  .tb-right a{color:var(--muted)} .tb-right a:hover{color:var(--accent-text)}
+  .whoami{color:var(--brand-blue);font-weight:600}
+  main{max-width:1100px;margin:0 auto;padding:34px 34px 80px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-text);margin-bottom:12px}
+  .eyebrow span{width:22px;height:1px;background:var(--accent)}
+  h1{font-family:var(--font-display);font-weight:300;font-size:42px;line-height:1.04;margin:0 0 8px;letter-spacing:-.015em}
+  h1 em{font-style:italic;color:#1D5B7E}
+  .lede{margin:0 0 24px;font-size:13.5px;color:var(--muted)}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-card);padding:24px 26px}
+  .q{margin-bottom:20px} .q:last-of-type{margin-bottom:6px}
+  .q .ql{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle);margin-bottom:8px}
+  .taps{display:flex;flex-wrap:wrap;gap:8px}
+  .tap{font:inherit;font-size:13px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--r-input);background:var(--paper-lt,#fff);color:var(--ink);cursor:pointer}
+  .tap.on{background:var(--ink);border-color:var(--ink);color:var(--cream,#fff);font-weight:600}
+  .q select,.q input{font:inherit;font-size:13.5px;padding:9px 10px;border:1px solid var(--border);border-radius:var(--r-input);background:var(--paper-lt,#fff);min-width:280px;max-width:100%}
+  .q input{width:100%}
+  .actions{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .btn{font:inherit;font-size:13px;padding:9px 16px;border-radius:var(--r-input);border:1px solid var(--brand-blue);background:var(--brand-blue);color:#fff;font-weight:500;cursor:pointer}
+  .btn.ghost{background:var(--panel);color:var(--brand-blue)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .status{font-size:12.5px;color:var(--muted)}
+  .notice{margin:18px 0 0;padding:11px 16px;background:var(--notice-bg);border:1px solid var(--notice-bd);border-radius:var(--r-input);font-size:12.5px;color:var(--notice-tx)}
+  .hidden{display:none !important}
+  .toolbar{display:flex;gap:10px;align-items:center;margin:28px 0 14px;flex-wrap:wrap}
+  .toolbar .hint{font-size:12.5px;color:var(--muted);margin-right:auto}
+
+  /* ---------- the report itself (this is what prints) ---------- */
+  .doc{--rb-a:var(--brand-blue);--rb-b:var(--brand-orange,#ED8B00)}
+  .page{background:#fff;border:1px solid var(--border);border-radius:6px;padding:48px 54px;margin-bottom:22px;box-shadow:0 18px 40px -30px rgba(14,42,68,.45)}
+  .cover-top{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:3px solid var(--rb-a);padding-bottom:18px;margin-bottom:34px}
+  .cover-top img{max-height:42px;max-width:220px}
+  .cover-top .by{font-size:12px;color:var(--muted);text-align:right}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--rb-a);font-weight:600;margin-bottom:10px}
+  .client{font-family:var(--font-display);font-size:40px;font-weight:400;line-height:1.08;margin:0 0 6px;color:var(--ink)}
+  .period{font-size:13px;color:var(--muted);margin-bottom:28px}
+  .c-head{font-family:var(--font-display);font-size:26px;line-height:1.2;margin:0 0 10px;color:var(--ink)}
+  .c-sum{font-size:14.5px;line-height:1.6;color:var(--ink-2,#334);margin:0 0 30px}
+  .kstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .k{border:1px solid var(--border);border-top:3px solid var(--rb-a);border-radius:6px;padding:14px 16px}
+  .k .l{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
+  .k .v{font-family:var(--font-display);font-size:30px;line-height:1.1;margin:4px 0 2px;color:var(--ink)}
+  .k .d{font-size:11.5px;color:var(--muted)}
+  .sec{padding:26px 0;border-top:1px solid var(--border);break-inside:avoid;page-break-inside:avoid}
+  .sec:first-child{border-top:0;padding-top:0}
+  .sec .st{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .sec .sk{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--rb-a);font-weight:600}
+  .pill{font-size:10.5px;padding:2px 8px;border-radius:99px;background:#eef3f7;color:var(--muted)}
+  .pill.strong{background:#e5f2ea;color:#1f6b3e} .pill.down{background:#fbeee4;color:#9a4b12}
+  .sec h3{font-family:var(--font-display);font-weight:400;font-size:22px;margin:0 0 6px;color:var(--ink)}
+  .sec p{font-size:13.5px;line-height:1.6;margin:0 0 16px;color:var(--ink-2,#334)}
+  .sbody{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:22px;align-items:start}
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .tile{background:#f7f6f2;border-radius:6px;padding:10px 12px}
+  .tile .v{font-family:var(--font-display);font-size:22px;color:var(--ink)} .tile .l{font-size:11.5px;color:var(--muted)}
+  .chart svg{width:100%;height:auto;display:block}
+  .chart .cap{font-size:11px;color:var(--subtle);margin-top:4px}
+  .foot{font-size:10.5px;color:var(--subtle);margin-top:26px;border-top:1px solid var(--border);padding-top:10px}
+  .testmark{color:#9a4b12;font-weight:600}
+  [contenteditable="true"]{outline:1px dashed transparent;border-radius:3px;transition:outline-color .15s}
+  [contenteditable="true"]:hover{outline-color:var(--border-st,#c9c4b8)}
+  [contenteditable="true"]:focus{outline:1px solid var(--rb-a);background:#fbfaf6}
+  @media (max-width:760px){ .kstrip{grid-template-columns:repeat(2,1fr)} .sbody{grid-template-columns:1fr} .page{padding:28px 22px} }
+
+  @page{size:Letter;margin:0.5in}
+  @media print{
+    body{background:#fff}
+    .no-print{display:none !important}
+    main{max-width:none;padding:0}
+    .page{border:0;box-shadow:none;border-radius:0;padding:0;margin:0}
+    .page + .page{break-before:page;page-break-before:always}
+    [contenteditable="true"]{outline:none !important;background:none !important}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+<div class="topbar no-print">
+  <img id="logo" alt="">
+  <span class="brand" id="brandname">Wellness Tools</span>
+  <div class="tb-right">
+    <span class="whoami" id="whoami"></span>
+    <a href="reports.html">&larr; Reports</a>
+    <a href="index.html">Tools</a>
+  </div>
+</div>
+
+<main>
+  <div class="no-print">
+    <div class="eyebrow"><span></span>Report Builder</div>
+    <h1>A report for your <em>client.</em></h1>
+    <p class="lede">Answer three quick questions. The numbers come straight from tracking; the wording is drafted for you and every line can be edited.</p>
+
+    <div class="panel">
+      <div class="q">
+        <div class="ql">Client</div>
+        <select id="client"><option value="">Loading&hellip;</option></select>
+      </div>
+      <div class="q">
+        <div class="ql">1 &middot; What matters most to this client?</div>
+        <div class="taps" id="prio">
+          <button class="tap on" data-v="reach">Reach</button>
+          <button class="tap" data-v="engagement">Engagement</button>
+          <button class="tap" data-v="topics">Topics that landed</button>
+          <button class="tap" data-v="savings">Money &amp; time saved</button>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">2 &middot; Period</div>
+        <div class="taps" id="period">
+          <button class="tap on" data-v="90">Last 90 days</button>
+          <button class="tap" data-v="182">Last 6 months</button>
+          <button class="tap" data-v="365">Last 12 months</button>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">3 &middot; Anything to work in? (optional, one line)</div>
+        <input id="note" maxlength="200" placeholder="e.g. They're expanding to two new sites next year">
+      </div>
+      <div class="actions">
+        <button class="btn" id="buildBtn">Build report</button>
+        <span class="status" id="status"></span>
+      </div>
+    </div>
+    <div class="notice hidden" id="notice"></div>
+
+    <div class="toolbar hidden" id="toolbar">
+      <span class="hint">Click any line of text to edit it. Numbers come from tracking and can&rsquo;t be changed here.</span>
+      <button class="btn ghost" id="rewordBtn">Redraft wording</button>
+      <button class="btn" id="printBtn">Download PDF</button>
+    </div>
+  </div>
+
+  <div class="doc" id="doc"></div>
+</main>
+
+<script>
+const API        = "https://n8n-admin.willclower.com/webhook";
+const REPORT_URL = API + "/drl/report";
+const WORDS_URL  = API + "/drl/report-words";
+const CONFIG_URL = API + "/hub-config";
+
+let SESSION = null, BRAND = { name:'', logo:'' }, COMPANIES = [];
+let STATE = { prio:'reach', days:90 };
+let BUILT = null;   // { model, words }
+
+// ---------- small helpers ----------
+const $ = id => document.getElementById(id);
+const esc = t => String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = n => (+n||0).toLocaleString('en-US');
+const iso = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const MN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const LANG = { es:'Spanish', vi:'Vietnamese', zh:'Chinese', ht:'Haitian Creole', so:'Somali', fr:'French', pt:'Portuguese', ar:'Arabic',
+  ko:'Korean', tl:'Tagalog', ru:'Russian', hi:'Hindi', am:'Amharic', ne:'Nepali', my:'Burmese', ja:'Japanese', de:'German', it:'Italian' };
+const PRIO_LABEL = { reach:'Reach', engagement:'Engagement', topics:'Topics that landed', savings:'Money and time saved' };
+const PERIOD_LABEL = { 90:'the last 90 days', 182:'the last 6 months', 365:'the last 12 months' };
+const longDate = d => MN[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+
+function wireTaps(id, key, cast){
+  document.querySelectorAll('#'+id+' .tap').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#'+id+' .tap').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); STATE[key]=cast?cast(b.dataset.v):b.dataset.v;
+  });
+}
+function note(t){ const n=$('notice'); if(!t){ n.classList.add('hidden'); return; } n.textContent=t; n.classList.remove('hidden'); }
+async function post(url, body){
+  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  return r.json();
+}
+
+// ---------- data ----------
+async function getReport(clientId, from, to){
+  const d=await post(REPORT_URL,{ session:SESSION.session, client_filter:clientId||'', from_date:iso(from), to_date:iso(to) });
+  if(d && d.error==='unauthorized'){ StudioAuth.expired(); throw new Error('unauthorized'); }
+  if(!d || !d.ok || !d.report) throw new Error('no_data');
+  return d.report;
+}
+function windows(days){
+  const to=new Date(), from=new Date(); from.setDate(from.getDate()-days);
+  const pTo=new Date(from); pTo.setDate(pTo.getDate()-1);
+  const pFrom=new Date(pTo); pFrom.setDate(pFrom.getDate()-days);
+  return { from, to, pFrom, pTo };
+}
+
+// change vs previous period, as words (numbers stay exact)
+function change(cur, prev){
+  if(!cur && !prev) return { pct:null, text:'no activity in either period', status:'none' };
+  if(!prev) return { pct:null, text:'new this period', status:'strong' };
+  const pct=Math.round((cur-prev)/prev*100);
+  const status = cur===0 ? 'none' : pct>=10 ? 'strong' : pct<=-10 ? 'down' : 'flat';
+  const text = pct===0 ? 'no change from the previous period' : (pct>0?'up ':'down ')+Math.abs(pct)+'% from the previous period';
+  return { pct, text, status };
+}
+function monthly(series, key){
+  const m={}, order=[];
+  series.forEach(s=>{ const k=s.date.slice(0,7); if(!(k in m)){ m[k]=0; order.push(k); } m[k]+= (+s[key]||0); });
+  return order.map(k=>({ label:MN[parseInt(k.slice(5,7),10)-1], v:m[k] }));
+}
+const topicTotal = r => (r.by_topic||[]).reduce((a,t)=>a+(+t.downloads||0)+(+t.scans||0),0);
+
+// ---------- CODE DECIDES: sections, facts, order ----------
+function buildModel(cur, prev, clientName){
+  const T=cur.totals||{}, P=prev.totals||{};
+  const sections={};
+
+  const cR=change(+T.downloads||0, +P.downloads||0);
+  sections.reach={ key:'reach', title:'Reach', status:cR.status, score:cR.pct, chg:cR,
+    facts:{ 'Downloads':fmt(T.downloads), 'Change':cR.text, 'Different items used':fmt(T.assets_downloaded), 'QR codes created':fmt(T.codes_minted) },
+    tiles:[[fmt(T.downloads),'downloads'],[fmt(T.assets_downloaded),'different items used'],[fmt(T.codes_minted),'QR codes created'],[cR.pct==null?'—':(cR.pct>0?'+':'')+cR.pct+'%','vs previous period']],
+    chart:{ type:'cols', data:monthly(cur.series||[],'downloads'), cap:'Downloads per month' } };
+
+  const hs=+T.human_scans||0, sc=+T.scans||0, share=sc?Math.round(hs/sc*100):0;
+  const sites=(cur.by_site||[]).filter(s=>s.site!=='No site');
+  const top=sites[0];
+  const cE=change(sc, +P.scans||0);
+  const eFacts={ 'QR scans':fmt(sc), 'Scans by real people':fmt(hs), 'Share from real people':share+'%', 'Change':cE.text };
+  if(top) eFacts['Busiest site']=top.site+' ('+fmt(top.scans)+' scans)';
+  sections.engagement={ key:'engagement', title:'Engagement', status:cE.status, score:cE.pct, chg:cE, facts:eFacts,
+    tiles:[[fmt(sc),'QR scans'],[fmt(hs),'by real people'],[share+'%','people, not bots'],[fmt(sites.length),'sites with scans']],
+    chart: sites.length ? { type:'bars', data:sites.slice(0,5).map(s=>({label:s.site, v:+s.scans||0})), cap:'QR scans by site' }
+                        : { type:'cols', data:monthly(cur.series||[],'scans'), cap:'QR scans per month' } };
+
+  const topics=(cur.by_topic||[]).map(t=>({ label:t.topic, v:(+t.downloads||0)+(+t.scans||0) })).sort((a,b)=>b.v-a.v);
+  const items=(cur.by_asset||[]).filter(a=>a.downloads>0).sort((a,b)=>b.downloads-a.downloads);
+  const cT=change(topicTotal(cur), topicTotal(prev));
+  const tFacts={ 'Change in topic activity':cT.text };
+  topics.slice(0,3).forEach((t,i)=>tFacts['Topic #'+(i+1)]=t.label+' ('+fmt(t.v)+' downloads and scans)');
+  if(items[0]) tFacts['Most-downloaded item']=items[0].label+' ('+fmt(items[0].downloads)+' downloads)';
+  sections.topics={ key:'topics', title:'Topics that landed', status:cT.status, score:cT.pct, facts:tFacts,
+    tiles: topics.slice(0,4).map(t=>[fmt(t.v), t.label]),
+    chart:{ type:'bars', data:topics.slice(0,6), cap:'Downloads and scans by topic' } };
+
+  const tr=+T.translations||0, ru=+T.reused||0, rpct=tr?Math.round(ru/tr*100):0;
+  const langs=(cur.by_lang||[]).map(l=>LANG[l.target_lang]||String(l.target_lang||'').toUpperCase());
+  const cS=change(ru, +P.reused||0);
+  const sFacts={ 'Documents translated':fmt(tr), 'Reused from the library at no new cost':fmt(ru), 'Share reused':rpct+'%', 'Change in reuse':cS.text };
+  if(langs.length) sFacts['Languages']=langs.join(', ');
+  sections.savings={ key:'savings', title:'Money & time saved', status: tr ? cS.status : 'none', score:cS.pct, chg:cS, facts:sFacts,
+    tiles:[[fmt(tr),'documents translated'],[fmt(ru),'reused at no new cost'],[rpct+'%','came from the library'],[fmt(langs.length),'languages']],
+    chart:{ type:'bars', data:(cur.by_lang||[]).slice(0,6).map(l=>({ label:LANG[l.target_lang]||l.target_lang, v:+l.n||0 })), cap:'Translations by language' } };
+
+  // order: the client's priority first; then strongest; flat and weak later — never hidden
+  const rank={ strong:0, flat:1, down:2, none:3 };
+  const rest=Object.values(sections).filter(s=>s.key!==STATE.prio)
+    .sort((a,b)=> rank[a.status]-rank[b.status] || ((b.score??-1e9)-(a.score??-1e9)));
+  const order=[sections[STATE.prio]].concat(rest);
+
+  return {
+    client: clientName, brand: BRAND.name||'', priority: PRIO_LABEL[STATE.prio], period: PERIOD_LABEL[STATE.days],
+    note: $('note').value.trim(), test_rows: +T.test_rows||0,
+    range: cur.range, kpis:[
+      { l:'Downloads', v:fmt(T.downloads), d:cR.text },
+      { l:'QR scans', v:fmt(sc), d:cE.text },
+      { l:'Translations', v:fmt(tr), d:change(tr,+P.translations||0).text },
+      { l:'Reused documents', v:fmt(ru), d:'of '+fmt(tr)+' translations' } ],
+    sections: order
+  };
+}
+
+// payload for the wording step: facts only, no ids
+function wordsPayload(m){
+  return { client:m.client, prepared_by:m.brand, period:m.period, client_priority:m.priority, account_manager_note:m.note,
+    cover_facts: Object.fromEntries(m.kpis.map(k=>[k.l, k.v+' ('+k.d+')'])),
+    sections: m.sections.map(s=>({ key:s.key, title:s.title, status:s.status, facts:s.facts })) };
+}
+
+// code-written default wording: used when the draft is unavailable or a line failed the number check
+function chgLine(noun, c){
+  if(c.status==='none' && c.pct==null) return 'There was no '+noun+' in either period.';
+  if(c.pct==null) return 'This is the first period with '+noun+'.';
+  if(c.pct===0) return 'That is the same as the previous period.';
+  return 'Compared with the previous period, '+noun+' was '+(c.pct>0?'up ':'down ')+Math.abs(c.pct)+'%.';
+}
+function fallback(m){
+  const s={};
+  m.sections.forEach(x=>{
+    const f=x.facts;
+    if(x.key==='reach') s.reach={ headline:f['Downloads']+' downloads in '+m.period, summary:'Teams used '+f['Different items used']+' different items. '+chgLine('download activity', x.chg) };
+    if(x.key==='engagement') s.engagement={ headline:f['QR scans']+' QR scans', summary:f['Scans by real people']+' came from real people ('+f['Share from real people']+'). '+chgLine('scan activity', x.chg)+(f['Busiest site']?' Busiest site: '+f['Busiest site']+'.':'') };
+    if(x.key==='topics') s.topics={ headline: f['Topic #1'] ? 'What landed: '+f['Topic #1'].replace(/ \(.*/,'') : 'Topic activity', summary: f['Topic #1'] ? 'Leading topics: '+[f['Topic #1'],f['Topic #2'],f['Topic #3']].filter(Boolean).join('; ')+'.' : 'No topic activity was recorded in this period.' };
+    if(x.key==='savings') s.savings={ headline:f['Reused from the library at no new cost']+' of '+f['Documents translated']+' translations came from the library', summary: f['Documents translated']==='0' ? 'No documents were translated in this period.' : f['Share reused']+' of translations were reused at no new cost. '+chgLine('reuse', x.chg) };
+  });
+  return { cover_headline: m.client+': wellness program report', cover_summary: 'A summary of '+m.client+'\u2019s activity over '+m.period+', led by '+m.priority.toLowerCase()+'.', sections:s };
+}
+function mergeWords(m, ai){
+  const fb=fallback(m), out={ cover_headline: (ai&&ai.cover_headline)||fb.cover_headline, cover_summary:(ai&&ai.cover_summary)||fb.cover_summary, sections:{} };
+  m.sections.forEach(s=>{
+    const a=ai && (ai.sections||[]).find(x=>x.key===s.key) || {};
+    out.sections[s.key]={ headline:a.headline||fb.sections[s.key].headline, summary:a.summary||fb.sections[s.key].summary };
+  });
+  return out;
+}
+
+// ---------- charts ----------
+function colsSvg(data){
+  const W=360,H=150,pb=22,pt=8, n=Math.max(data.length,1), max=Math.max(1,...data.map(d=>d.v)), bw=W/n*0.62;
+  return `<svg viewBox="0 0 ${W} ${H}">${data.map((d,i)=>{ const h=(H-pb-pt)*d.v/max, x=(i+0.5)*W/n-bw/2, y=H-pb-h;
+    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="2" fill="var(--rb-a)"/>
+      <text x="${(x+bw/2).toFixed(1)}" y="${(y-3).toFixed(1)}" text-anchor="middle" font-size="10" fill="#555">${fmt(d.v)}</text>
+      <text x="${(x+bw/2).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" fill="#888">${esc(d.label)}</text>`; }).join('')}</svg>`;
+}
+function barsSvg(data){
+  if(!data.length) return '<div class="cap">No activity in this period.</div>';
+  const W=360,row=24,lab=120,H=data.length*row, max=Math.max(1,...data.map(d=>d.v));
+  return `<svg viewBox="0 0 ${W} ${H}">${data.map((d,i)=>{ const w=(W-lab-40)*d.v/max, y=i*row;
+    return `<text x="0" y="${y+15}" font-size="11" fill="#444">${esc(String(d.label).slice(0,20))}</text>
+      <rect x="${lab}" y="${y+5}" width="${Math.max(w,1).toFixed(1)}" height="13" rx="2" fill="var(--rb-a)"/>
+      <text x="${(lab+w+6).toFixed(1)}" y="${y+15}" font-size="10.5" fill="#555">${fmt(d.v)}</text>`; }).join('')}</svg>`;
+}
+
+// ---------- render ----------
+function render(m, w){
+  const ed = (cls, t, tag) => `<${tag||'div'} class="${cls}" contenteditable="true" spellcheck="true">${esc(t)}</${tag||'div'}>`;
+  const statusPill = s => s==='strong'?'<span class="pill strong">Strong</span>':s==='down'?'<span class="pill down">Down</span>':s==='flat'?'<span class="pill">Steady</span>':'<span class="pill">No activity</span>';
+  const r = m.range ? (()=>{ const f=new Date(m.range.from+'T00:00'), t=new Date(m.range.to+'T00:00'); return longDate(f)+' \u2013 '+longDate(t); })() : '';
+  const testLine = m.test_rows ? `<span class="testmark">Beta: includes ${fmt(m.test_rows)} test records.</span> ` : '';
+  const foot = `<div class="foot">${testLine}Figures for ${esc(r)}, compared with the same length of time just before it.</div>`;
+  const cover = `<section class="page">
+    <div class="cover-top">${BRAND.logo?`<img src="${esc(BRAND.logo)}" alt="">`:`<strong>${esc(BRAND.name)}</strong>`}
+      <div class="by">Prepared by ${esc(BRAND.name||'your wellness team')}<br>${esc(longDate(new Date()))}</div></div>
+    <div class="kicker">Wellness program report</div>
+    <h2 class="client">${esc(m.client)}</h2>
+    <div class="period">${esc(r)}</div>
+    ${ed('c-head', w.cover_headline, 'h3')}
+    ${ed('c-sum', w.cover_summary, 'p')}
+    <div class="kstrip">${m.kpis.map(k=>`<div class="k"><div class="l">${esc(k.l)}</div><div class="v">${esc(k.v)}</div><div class="d">${esc(k.d)}</div></div>`).join('')}</div>
+    ${foot}</section>`;
+  const secs = m.sections.map(s=>{
+    const sw=w.sections[s.key];
+    const chart = s.chart.type==='cols' ? colsSvg(s.chart.data) : barsSvg(s.chart.data);
+    return `<div class="sec">
+      <div class="st"><span class="sk">${esc(s.title)}</span>${statusPill(s.status)}</div>
+      ${ed('', sw.headline, 'h3')}
+      ${ed('', sw.summary, 'p')}
+      <div class="sbody"><div class="tiles">${s.tiles.map(t=>`<div class="tile"><div class="v">${esc(t[0])}</div><div class="l">${esc(t[1])}</div></div>`).join('')}</div>
+        <div class="chart">${chart}<div class="cap">${esc(s.chart.cap)}</div></div></div></div>`;
+  });
+  const pages = [secs.slice(0,2), secs.slice(2)].filter(p=>p.length).map(p=>`<section class="page">${p.join('')}${foot}</section>`);
+  $('doc').innerHTML = cover + pages.join('');
+}
+
+// ---------- actions ----------
+async function draftWords(m){
+  try{
+    const d=await post(WORDS_URL,{ session:SESSION.session, payload:wordsPayload(m) });
+    if(d && d.ok) return { words:d.words, replaced:(d.replaced||[]).length };
+  }catch(e){}
+  return { words:null, replaced:-1 };
+}
+function wordNote(m, res){
+  const parts=[];
+  if(res.replaced<0) parts.push('The wording couldn\u2019t be drafted, so plain default wording is shown. You can edit every line.');
+  else if(res.replaced>0) parts.push(res.replaced+' drafted line'+(res.replaced>1?'s':'')+' used a number that isn\u2019t in the data, so default wording was put in instead.');
+  if(m.test_rows) parts.push('Beta: these figures include '+fmt(m.test_rows)+' test records, and the report says so.');
+  note(parts.join(' '));
+}
+async function build(){
+  const btn=$('buildBtn'); btn.disabled=true; note(''); $('toolbar').classList.add('hidden');
+  try{
+    const sel=$('client'), clientId=sel.value, clientName= clientId ? sel.options[sel.selectedIndex].text : (BRAND.name ? BRAND.name+' \u2014 all companies' : 'All companies');
+    $('status').textContent='Pulling the numbers\u2026';
+    const w=windows(STATE.days);
+    const [cur, prev] = await Promise.all([ getReport(clientId, w.from, w.to), getReport(clientId, w.pFrom, w.pTo) ]);
+    const m=buildModel(cur, prev, clientName);
+    $('status').textContent='Drafting the wording\u2026';
+    const res=await draftWords(m);
+    const words=mergeWords(m, res.words);
+    BUILT={ model:m, words };
+    render(m, words); wordNote(m, res);
+    $('toolbar').classList.remove('hidden'); $('status').textContent='';
+    $('doc').scrollIntoView({ behavior:'smooth', block:'start' });
+  }catch(e){
+    if(String(e.message)!=='unauthorized'){ $('doc').innerHTML=''; note('Couldn\u2019t load the figures. Nothing is shown rather than guessed \u2014 try again in a moment.'); }
+    $('status').textContent='';
+  }
+  btn.disabled=false;
+}
+async function reword(){
+  if(!BUILT) return;
+  const b=$('rewordBtn'); b.disabled=true; b.textContent='Redrafting\u2026';
+  const res=await draftWords(BUILT.model);
+  BUILT.words=mergeWords(BUILT.model, res.words);
+  render(BUILT.model, BUILT.words); wordNote(BUILT.model, res);
+  b.disabled=false; b.textContent='Redraft wording';
+}
+function printPdf(){
+  const old=document.title;
+  document.title=(BUILT?BUILT.model.client+' \u2014 wellness report':'Wellness report');   // becomes the PDF file name
+  window.print(); setTimeout(()=>{ document.title=old; }, 1000);
+}
+
+// ---------- start ----------
+function applyBrand(bc, name){
+  const c=(bc&&bc.colors)||{}, r=document.documentElement.style;
+  if(c.blue){ r.setProperty('--brand-blue',c.blue); }
+  if(c.navy){ r.setProperty('--ink',c.navy); }
+  if(c.orange){ r.setProperty('--brand-orange',c.orange); r.setProperty('--accent',c.orange); }
+  BRAND.name=(bc&&bc.name)||name||''; BRAND.logo=(bc&&bc.logo)||'';
+  if(BRAND.logo){ const l=$('logo'); l.src=BRAND.logo; l.style.display='block'; }
+  $('brandname').textContent=BRAND.name||'Wellness Tools';
+}
+async function init(){
+  SESSION=StudioAuth.require('reports'); if(!SESSION) return;
+  StudioAuth.paint();
+  try{ let cfg=await post(CONFIG_URL,{ session:SESSION.session }); if(Array.isArray(cfg)) cfg=cfg[0]; applyBrand(cfg.brand_config, cfg.name); }catch(e){}
+  wireTaps('prio','prio'); wireTaps('period','days', v=>parseInt(v,10));
+  $('buildBtn').onclick=build; $('rewordBtn').onclick=reword; $('printBtn').onclick=printPdf;
+  try{
+    const w=windows(90), rep=await getReport('', w.from, w.to);
+    COMPANIES=(rep.scope&&rep.scope.companies)||[];
+    const sel=$('client');
+    sel.innerHTML = (COMPANIES.length>1?'<option value="">All my companies</option>':'') +
+      COMPANIES.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+    if(!COMPANIES.length){ sel.innerHTML='<option value="">No companies available</option>'; $('buildBtn').disabled=true; }
+  }catch(e){ if(String(e.message)!=='unauthorized') note('Couldn\u2019t load your companies. Try again in a moment.'); }
+}
+init();
+</script>
+</body>
+</html>
