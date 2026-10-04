@@ -284,7 +284,10 @@ async function loadOverview(hasReports){
   if(!hasReports){ hideOverview(); return; }
   try{
     const sess=StudioAuth.get();
-    const res=await fetch(REPORT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session:sess?sess.session:''})});
+    // same window as Reports' default "90 days": local calendar date, today back 90
+    const to=new Date(), from=new Date(); from.setDate(from.getDate()-90);
+    const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const res=await fetch(REPORT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session:sess?sess.session:'', from_date:iso(from), to_date:iso(to)})});
     const d=await res.json();
     if(!d||!d.ok||!d.report){ hideOverview(); return; }
     const r=d.report, t=r.totals||{}, ser=r.series||[];
