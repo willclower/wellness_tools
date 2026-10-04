@@ -293,7 +293,7 @@ function mapReport(rep){
 async function loadData(){
   if(!SESSION){ return { error:true }; }
   const to=new Date(), from=new Date(); from.setDate(from.getDate()-STATE.range);
-  const iso=d=>d.toISOString().slice(0,10);
+  const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');  // local calendar date (same rule as the hub)
   const body={ session:SESSION.session, client_filter:STATE.client_filter||"", from_date:iso(from), to_date:iso(to) };
   try{
     const res=await fetch(REPORT_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
