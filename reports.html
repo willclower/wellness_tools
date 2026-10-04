@@ -245,7 +245,7 @@ function doLogout(){ StudioAuth.logout(); }
 
 // ---- map the live /report payload into the render shape ----
 function normSpark(vals){ const m=Math.max.apply(null, vals.concat([1])); return vals.map(v=>v/m); }
-function downsample(arr,n){ if(arr.length<=n) return arr.slice(); const out=[]; const step=(arr.length-1)/(n-1); for(let i=0;i<n;i++) out.push(arr[Math.round(i*step)]); return out; }
+function downsample(arr,n){ if(arr.length<=n) return arr.slice(); const out=[]; for(let i=0;i<n;i++){ const s=Math.floor(i*arr.length/n), e=Math.floor((i+1)*arr.length/n); let t=0; for(let j=s;j<e;j++) t+=arr[j]; out.push(t); } return out; }  // each point = total for its stretch of days
 function halfDelta(vals){ const h=Math.floor(vals.length/2); if(h<1) return null; let a=0,b=0; for(let i=0;i<h;i++)a+=vals[i]; for(let i=h;i<vals.length;i++)b+=vals[i]; if(!a) return null; return Math.round((b-a)/a*100); }
 function deltaStr(v){ if(v==null) return ""; return (v>=0?"\u25B2 ":"\u25BC ")+Math.abs(v)+"%"; }
 const MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
