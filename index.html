@@ -117,11 +117,11 @@
         <h1>Your wellness toolkit,<br><em>in one place.</em></h1>
         <p class="lede" id="lede">Ready-made screens, instant translation, and proof it's working. Everything you make stays with your organization.</p>
       </div>
-      <div class="kpis">
-        <div class="kpi"><div class="l">Downloads</div><div class="v">1,284</div><div class="d">&#9650; 18% vs. prior</div></div>
-        <div class="kpi"><div class="l">QR scans</div><div class="v">392</div><div class="d">&#9650; 9% vs. prior</div></div>
-        <div class="kpi"><div class="l">Translations</div><div class="v">167</div><div class="d">&#9650; 24% vs. prior</div></div>
-        <div class="kpi"><div class="l">Reused docs</div><div class="v">58</div><div class="d flat">of 167 translations</div></div>
+      <div class="kpis" id="kpis">
+        <div class="kpi"><div class="l">Downloads</div><div class="v" id="kDl">&mdash;</div><div class="d flat" id="kDlD">last 90 days</div></div>
+        <div class="kpi"><div class="l">QR scans</div><div class="v" id="kQr">&mdash;</div><div class="d flat" id="kQrD">last 90 days</div></div>
+        <div class="kpi"><div class="l">Translations</div><div class="v" id="kTr">&mdash;</div><div class="d flat" id="kTrD">last 90 days</div></div>
+        <div class="kpi"><div class="l">Reused docs</div><div class="v" id="kRu">&mdash;</div><div class="d flat" id="kRuD">&nbsp;</div></div>
       </div>
     </div>
   </section>
@@ -149,21 +149,19 @@
     <div class="card">
       <div class="head"><h3>Recent activity</h3><a href="reports.html">View all reports</a></div>
       <p class="cap">Across your sites</p>
-      <div class="act"><span class="ic">&#9638;</span><div><div class="p">&ldquo;Thirsty is already too late.&rdquo; downloaded</div><div class="s">Screen &middot; 16:9</div></div><span class="t">14 min ago</span></div>
-      <div class="act"><span class="ic">&#8646;</span><div><div class="p">August newsletter translated to Vietnamese</div><div class="s">Reused from library &mdash; 0 new spend</div></div><span class="t">1 hr ago</span></div>
-      <div class="act"><span class="ic">&#9684;</span><div><div class="p">Q3 usage report exported</div><div class="s">All sites &middot; CSV</div></div><span class="t">Yesterday</span></div>
-      <div class="act"><span class="ic">&#9638;</span><div><div class="p">Screening one-pager added to playlist</div><div class="s">Prevention &middot; office</div></div><span class="t">2 days ago</span></div>
+      <div id="recent"><p class="cap">Loading&hellip;</p></div>
     </div>
   </div>
 
   <div class="demo-note">
-    <span class="dt-notice">Overview figures shown are sample data.</span>
+    <span class="dt-notice" id="testNote" style="display:none"></span>
   </div>
 </main>
 
 <script>
 const CONFIG_URL = "https://n8n-admin.willclower.com/webhook/hub-config";
 const LOGIN_URL  = "https://n8n-admin.willclower.com/webhook/drl/login";
+const REPORT_URL = "https://n8n-admin.willclower.com/webhook/drl/report";
 const QS = new URLSearchParams(location.search);
 const NEXT = StudioAuth.safeNext(QS.get('next'));
 const WHY = { expired:'Your session ended. Please log in again.', login:'Please log in to continue.',
@@ -262,6 +260,54 @@ async function boot(){
   const tiles = Array.isArray(data.tiles) ? data.tiles : [];
   tiles.forEach(t=>{ const c=toolCard(t.key, t.key==='reports' ? 'internal' : t.url); if(c) wrap.appendChild(c); });
   if(!tiles.length) wrap.innerHTML='<p class="cap">No tools are switched on for your account yet. Ask your administrator.</p>';
+  loadOverview(tiles.some(t=>t.key==='reports'));
+}
+
+// ---- live overview: same numbers as Reports (last 90 days). Never sample data. ----
+const LANG = { es:'Spanish', vi:'Vietnamese', zh:'Chinese', ht:'Haitian Creole', so:'Somali', fr:'French', pt:'Portuguese',
+               ar:'Arabic', ko:'Korean', tl:'Tagalog', ru:'Russian', hi:'Hindi', am:'Amharic', ne:'Nepali', my:'Burmese', ja:'Japanese', de:'German', it:'Italian' };
+function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function ago(iso){
+  const m=Math.max(0,Math.round((Date.now()-new Date(iso).getTime())/60000));
+  if(m<2) return 'Just now'; if(m<60) return m+' min ago';
+  const h=Math.round(m/60); if(h<24) return h+(h===1?' hr ago':' hrs ago');
+  const d=Math.round(h/24); return d===1?'Yesterday':d+' days ago';
+}
+function halfDelta(v){ const h=Math.floor(v.length/2); let a=0,b=0; v.forEach((x,i)=>{ if(i<h)a+=x; else b+=x; }); if(!a) return null; return Math.round((b-a)/a*100); }
+function setD(id, pct){
+  const el=document.getElementById(id);
+  if(pct==null){ el.className='d flat'; el.textContent='last 90 days'; return; }
+  el.className='d'+(pct<0?' flat':''); el.innerHTML=(pct>=0?'&#9650; ':'&#9660; ')+Math.abs(pct)+'% &middot; last 90 days';
+}
+function hideOverview(){ document.getElementById('kpis').style.display='none'; document.querySelector('.lower').style.display='none'; }
+async function loadOverview(hasReports){
+  if(!hasReports){ hideOverview(); return; }
+  try{
+    const sess=StudioAuth.get();
+    const res=await fetch(REPORT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session:sess?sess.session:''})});
+    const d=await res.json();
+    if(!d||!d.ok||!d.report){ hideOverview(); return; }
+    const r=d.report, t=r.totals||{}, ser=r.series||[];
+    const fmt=n=>(+n||0).toLocaleString();
+    document.getElementById('kDl').textContent=fmt(t.downloads); setD('kDlD', halfDelta(ser.map(x=>x.downloads)));
+    document.getElementById('kQr').textContent=fmt(t.scans);     setD('kQrD', halfDelta(ser.map(x=>x.scans)));
+    document.getElementById('kTr').textContent=fmt(t.translations); setD('kTrD', halfDelta(ser.map(x=>x.translations||0)));
+    document.getElementById('kRu').textContent=fmt(t.reused);
+    document.getElementById('kRuD').textContent='of '+fmt(t.translations)+' translations';
+    const ICON={download:'&#9638;', translation:'&#8646;', scan:'&#9684;'};
+    const rows=(r.recent||[]).map(e=>{
+      let p, sub=e.sub||'';
+      if(e.kind==='translation'){
+        const parts=sub.split(' \u00b7 '), lang=LANG[parts[0]]||(parts[0]||'').toUpperCase(), reused=parts[1]==='reused';
+        p=esc(e.title)+' translated to '+esc(lang);
+        sub=(reused?'Reused from library \u2014 no new cost':'New translation')+(parts[2]?' \u00b7 '+parts[2]:'');
+      } else if(e.kind==='scan'){ p='\u201c'+esc(e.title)+'\u201d QR scanned'; }
+      else { p='\u201c'+esc(e.title)+'\u201d downloaded'; }
+      return `<div class="act"><span class="ic">${ICON[e.kind]||'&#9638;'}</span><div><div class="p">${p}</div><div class="s">${esc(sub)}</div></div><span class="t">${ago(e.at)}</span></div>`;
+    });
+    document.getElementById('recent').innerHTML = rows.length ? rows.join('') : '<p class="cap">No activity in the last 90 days yet.</p>';
+    if(t.test_rows>0){ const n=document.getElementById('testNote'); n.textContent='Includes '+fmt(t.test_rows)+' test records (beta). They are removed before launch.'; n.style.display=''; }
+  }catch(e){ hideOverview(); }
 }
 boot();
 </script>
