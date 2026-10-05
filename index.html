@@ -301,7 +301,7 @@ async function loadOverview(hasReports){
     const rows=(r.recent||[]).map(e=>{
       let p, sub=e.sub||'';
       if(e.kind==='translation'){
-        const parts=sub.split(' \u00b7 '), lang=LANG[parts[0]]||(parts[0]||'').toUpperCase(), reused=parts[1]==='reused';
+        const parts=sub.split(' \u00b7 '), lang=LANG[parts[0]]||(parts[0]||''), reused=parts[1]==='reused';
         p=esc(e.title)+' translated to '+esc(lang);
         sub=(reused?'Reused from library \u2014 no new cost':'New translation')+(parts[2]?' \u00b7 '+parts[2]:'');
       } else if(e.kind==='scan'){ p='\u201c'+esc(e.title)+'\u201d QR scanned'; }
